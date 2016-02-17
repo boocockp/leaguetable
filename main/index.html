@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>League Table</title>
+</head>
+<body>
+
+<div id="input" class="frame">
+    <h3>CSV results</h3>
+    <textarea id="resultInput" cols="30" rows="10"></textarea>
+    <p><button id="enter">Enter</button></p>
+    <p><label>Sort by name<input id="alpha" type="checkbox"></label></p>
+</div>
+
+
+<div id="table" class="frame"></div>
+
+<script src="lib/lodash.js"></script>
+
+<script>
+    'use strict';
+    var resultData = [];
+
+    function leaguePositions(results) {
+        return _.sortBy(allTeamStats(results), (t) => -t.points );
+    }
+
+    function teamsByName(results) {
+        return _.sortBy(allTeamStats(results), (t) => t.name );
+    }
+
+    let allTeamStats = (results) =>  teams(results).map( (t) => teamStats(results, t));
+
+    let _teams = function(results) {
+        let homeTeams = results.map( (r) => r.home.team);
+        let awayTeams = results.map( (r) => r.away.team);
+        return _.uniq(homeTeams.concat(awayTeams));
+    };
+
+    let teams = _.memoize(_teams, (r) => r.length);
+
+
+    let _teamResults = function(results, teamName) {
+        return results.filter( (r) => r.home.team == teamName || r.away.team == teamName)
+    };
+    let teamResults = _.memoize(_teamResults, (r, tn) => tn + r.length);
+
+    let _teamStats = function(results, teamName) {
+        return {
+            name: teamName,
+            points: _.sum(teamResults(results, teamName).map( (r) => pointsFor(teamName, r)))
+        }
+    };
+    let teamStats = _.memoize(_teamStats, (r, tn) => tn + r.length);
+
+
+    function pointsFor(teamName, result) {
+        if (result.home.team == teamName) return pointsFrom(result.home, result.away);
+        if (result.away.team == teamName) return pointsFrom(result.away, result.home);
+        return 0;
+    }
+
+    function pointsFrom(yourResult, theirResult) {
+        if (yourResult.goals > theirResult.goals) return 3;
+        if (yourResult.goals == theirResult.goals) return 1;
+        return 0;
+    }
+
+
+</script>
+
+<script>
+    'use strict'
+    function tableHtml(leaguePositions) {
+        return '<table>' +
+                '<thead>' +
+                '<tr><th>Team</th><th>Points</th></tr>' +
+                '</thead>' +
+                '<tbody>' +
+                leaguePositions.map(function(r) { return rowHtml(r); }).join('') +
+                '</tbody>' +
+                '</table>'
+    }
+
+    function rowHtml(teamPosition) {
+        return '<tr>' +
+                '<td>' + teamPosition.name + '</td>' +
+                '<td>' + teamPosition.points + '</td>' +
+                '</tr>'
+    }
+
+    function showLeagueTable() {
+        let positions = document.getElementById('alpha').checked ? teamsByName(resultData) : leaguePositions(resultData);
+        document.getElementById('table').innerHTML = tableHtml(positions);
+    }
+
+    showLeagueTable();
+</script>
+
+<script>
+    'use strict';
+    function enterResults() {
+        let inputArea = document.getElementById('resultInput');
+        resultData = resultData.concat(parseCsvResults(inputArea.value));
+        inputArea.value = '';
+        showLeagueTable();
+    }
+
+    function parseCsvResults(text) {
+        return text.trim().split('\n').filter( (l) => l.trim() ).map(parseCsvLine);
+    }
+
+    function parseCsvLine(line) {
+        let tokens = line.trim().split(/ *, */).map( (w) => w.trim() );
+        return { home: {team: tokens[0], goals: parseInt(tokens[1])},  away: {team: tokens[2], goals: parseInt(tokens[3])} };
+    }
+
+    function initPage() {
+        document.getElementById('enter').addEventListener('click', enterResults);
+        document.getElementById('alpha').addEventListener('click', showLeagueTable);
+    }
+
+    initPage();
+</script>
+
+</body>
+</html>
