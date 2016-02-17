@@ -20,6 +20,10 @@
 
 <script>
     'use strict';
+    Function.prototype.memoize = function(resolverFn) {
+        return _.memoize(this, resolverFn);
+    };
+
     var resultData = [];
 
     function leaguePositions(results) {
@@ -32,27 +36,23 @@
 
     let allTeamStats = (results) =>  teams(results).map( (t) => teamStats(results, t));
 
-    let _teams = function(results) {
+    let teams = function(results) {
         let homeTeams = results.map( (r) => r.home.team);
         let awayTeams = results.map( (r) => r.away.team);
         return _.uniq(homeTeams.concat(awayTeams));
-    };
-
-    let teams = _.memoize(_teams, (r) => r.length);
+    }.memoize((r) => r.length);
 
 
-    let _teamResults = function(results, teamName) {
+    let teamResults = function(results, teamName) {
         return results.filter( (r) => r.home.team == teamName || r.away.team == teamName)
-    };
-    let teamResults = _.memoize(_teamResults, (r, tn) => tn + r.length);
+    }.memoize((r, tn) => tn + r.length);
 
-    let _teamStats = function(results, teamName) {
+    let teamStats = function(results, teamName) {
         return {
             name: teamName,
             points: _.sum(teamResults(results, teamName).map( (r) => pointsFor(teamName, r)))
         }
-    };
-    let teamStats = _.memoize(_teamStats, (r, tn) => tn + r.length);
+    }.memoize((r, tn) => tn + r.length);
 
 
     function pointsFor(teamName, result) {
