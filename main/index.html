@@ -57,28 +57,21 @@
 
     var resultData = [];
 
-    function leaguePositions(results) {
-        return _.sortBy(allTeamStats(results), (t) => -t.points );
-    }
-
-    function teamsByName(results) {
-        return _.sortBy(allTeamStats(results), (t) => t.name );
-    }
+    let leaguePositions = (results) =>_.sortBy(allTeamStats(results), (t) => -t.points );
+    let teamsByName = (results) => _.sortBy(allTeamStats(results), (t) => t.name );
 
     let allTeamStats = (results) =>  teams(results).map( (t) => teamStats(results, t));
 
-    let teams = function(results) {
+    let teams = ((results) => {
         let homeTeams = results.map( (r) => r.home.team);
         let awayTeams = results.map( (r) => r.away.team);
         return _.uniq(homeTeams.concat(awayTeams));
-    }.memoize((r) => r.length);
+    }).memoize((r) => r.length);
 
 
-    let teamResults = function(results, teamName) {
-        return results.filter( (r) => r.home.team == teamName || r.away.team == teamName)
-    }.memoize((r, tn) => tn + r.length);
+    let teamResults = ((results, teamName) => results.filter( (r) => r.home.team == teamName || r.away.team == teamName) ).memoize((r, tn) => tn + r.length);
 
-    let teamStats = function(results, teamName) {
+    let teamStats = ((results, teamName) => {
         let ourResults = teamResults(results, teamName);
         return {
             name: teamName,
@@ -91,7 +84,7 @@
             goalDifference:_.sum(ourResults.map((r) => goalsFor(teamName, r) - goalsAgainst(teamName, r))),
             points: _.sum(ourResults.map( (r) => pointsFor(teamName, r)))
         }
-    }.memoize((r, tn) => tn + r.length);
+    }).memoize((r, tn) => tn + r.length);
 
 
     let goalsFor = (teamName, result) => teamName == result.home.team ? result.home.goals : result.away.goals;
