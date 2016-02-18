@@ -1,4 +1,8 @@
 'use strict';
+Function.prototype.memoize = function(resolverFn) {
+    return _.memoize(this, resolverFn);
+};
+
 Function.prototype.time = function(name) {
     let fn = this;
     return function() {
@@ -19,7 +23,10 @@ let teams = ((results) => {
     let homeTeams = results.map( (r) => r.home.team);
     let awayTeams = results.map( (r) => r.away.team);
     return _.uniq(homeTeams.concat(awayTeams));
-});
+}).memoize((r) => r.length);
+
+
+let teamResults = ((results, teamName) => results.filter( (r) => r.home.team == teamName || r.away.team == teamName) ).memoize((r, tn) => tn + r.length);
 
 let teamStats = ((results, teamName) => {
     let ourResults = teamResults(results, teamName);
@@ -34,9 +41,8 @@ let teamStats = ((results, teamName) => {
         goalDifference:_.sum(ourResults.map((r) => goalsFor(teamName, r) - goalsAgainst(teamName, r))),
         points: _.sum(ourResults.map( (r) => pointsFor(teamName, r)))
     }
-});
+}).memoize((r, tn) => tn + r.length);
 
-let teamResults = ((results, teamName) => results.filter( (r) => r.home.team == teamName || r.away.team == teamName) );
 
 let goalsFor = (teamName, result) => teamName == result.home.team ? result.home.goals : result.away.goals;
 let goalsAgainst = (teamName, result) => teamName == result.home.team ? result.away.goals : result.home.goals;
