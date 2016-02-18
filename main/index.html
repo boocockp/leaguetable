@@ -12,10 +12,10 @@
             margin-left: 60px;
         }
         div.frame {
-            width: 30%;
+            /*width: 30%;*/
             height: 300px;
             padding: 0 30px;
-            margin: 0 30px;
+            margin: 0 60px 0 30px;
             /*border: 2px solid lightslategray;*/
             float: left;
         }
@@ -36,7 +36,7 @@
 <h2>League Table Calculator</h2>
 <div id="input" class="frame">
     <h3>Match Results</h3>
-    <textarea id="resultInput" cols="50" rows="15"></textarea>
+    <textarea id="resultInput" cols="50" rows="15" placeholder="Home Team, Home Goals, Away Team, Away Goals"></textarea>
     <p><button id="enter">Enter</button></p>
     <p><label>Sort by name<input id="alpha" type="checkbox"></label></p>
 </div>
@@ -79,24 +79,27 @@
     }.memoize((r, tn) => tn + r.length);
 
     let teamStats = function(results, teamName) {
+        let ourResults = teamResults(results, teamName);
         return {
             name: teamName,
-            points: _.sum(teamResults(results, teamName).map( (r) => pointsFor(teamName, r)))
+            games: ourResults.length,
+            won:   ourResults.filter((r) => won(teamName, r)).length,
+            drawn:   ourResults.filter((r) => drawn(r)).length,
+            lost:   ourResults.filter((r) => lost(teamName, r)).length,
+            goalsFor:_.sum(ourResults.map((r) => goalsFor(teamName, r))),
+            goalsAgainst:_.sum(ourResults.map((r) => goalsAgainst(teamName, r))),
+            goalDifference:_.sum(ourResults.map((r) => goalsFor(teamName, r) - goalsAgainst(teamName, r))),
+            points: _.sum(ourResults.map( (r) => pointsFor(teamName, r)))
         }
     }.memoize((r, tn) => tn + r.length);
 
 
-    function pointsFor(teamName, result) {
-        if (result.home.team == teamName) return pointsFrom(result.home, result.away);
-        if (result.away.team == teamName) return pointsFrom(result.away, result.home);
-        return 0;
-    }
-
-    function pointsFrom(yourResult, theirResult) {
-        if (yourResult.goals > theirResult.goals) return 3;
-        if (yourResult.goals == theirResult.goals) return 1;
-        return 0;
-    }
+    let goalsFor = (teamName, result) => teamName == result.home.team ? result.home.goals : result.away.goals;
+    let goalsAgainst = (teamName, result) => teamName == result.home.team ? result.away.goals : result.home.goals;
+    let drawn = (result) => result.home.goals == result.away.goals;
+    let won = (teamName, result) => goalsFor(teamName, result) > goalsAgainst(teamName, result);
+    let lost = (teamName, result) => goalsFor(teamName, result) < goalsAgainst(teamName, result);
+    let pointsFor = (teamName, result) => won(teamName, result) ? 3 : drawn(result) ? 1 : 0;
 
 
 </script>
@@ -106,7 +109,17 @@
     function tableHtml(leaguePositions) {
         return '<table>' +
                 '<thead>' +
-                '<tr><th>Team</th><th>Points</th></tr>' +
+                '<tr>' +
+                '<th>Team</th>' +
+                '<th>Games</th>' +
+                '<th>Won</th>' +
+                '<th>Drawn</th>' +
+                '<th>Lost</th>' +
+                '<th>Goals For</th>' +
+                '<th>Goals Against</th>' +
+                '<th>Goal Difference</th>' +
+                '<th>Points</th>' +
+                '</tr>' +
                 '</thead>' +
                 '<tbody>' +
                 leaguePositions.map(function(r) { return rowHtml(r); }).join('') +
@@ -117,6 +130,13 @@
     function rowHtml(teamPosition) {
         return '<tr>' +
                 '<td>' + teamPosition.name + '</td>' +
+                '<td>' + teamPosition.games + '</td>' +
+                '<td>' + teamPosition.won + '</td>' +
+                '<td>' + teamPosition.drawn + '</td>' +
+                '<td>' + teamPosition.lost + '</td>' +
+                '<td>' + teamPosition.goalsFor + '</td>' +
+                '<td>' + teamPosition.goalsAgainst + '</td>' +
+                '<td>' + teamPosition.goalDifference + '</td>' +
                 '<td>' + teamPosition.points + '</td>' +
                 '</tr>'
     }
