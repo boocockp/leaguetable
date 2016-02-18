@@ -55,12 +55,23 @@
         return _.memoize(this, resolverFn);
     };
 
+    Function.prototype.time = function(name) {
+        let fn = this;
+        return function() {
+            let startTime = Date.now();
+            let result = fn.apply(this, arguments);
+            let endTime = Date.now();
+            console.log(name, (endTime - startTime) + 'ms' );
+            return result;
+        }
+    };
+
     var resultData = [];
 
     let leaguePositions = (results) =>_.sortBy(allTeamStats(results), (t) => -t.points );
     let teamsByName = (results) => _.sortBy(allTeamStats(results), (t) => t.name );
 
-    let allTeamStats = (results) =>  teams(results).map( (t) => teamStats(results, t));
+    let allTeamStats = ((results) =>  teams(results).map( (t) => teamStats(results, t))).time('allTeamStats');
 
     let teams = ((results) => {
         let homeTeams = results.map( (r) => r.home.team);
