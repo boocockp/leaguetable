@@ -1,6 +1,6 @@
 'use strict';
 
-let resultInputSource = new InputSource();
+let resultInputSource = new LocalStorageInputSource("leagueTable.results");
 let alphaInputSource = new InputSource();
 
 let enterResults = () => {

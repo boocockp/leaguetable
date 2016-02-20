@@ -48,7 +48,7 @@ class LeagueTable {
             name: teamName,
             games: ourResults.length,
             won: ourResults.filter(r => this.won(teamName, r)).length,
-            drawn: ourResults.filter(r => this.drawnr).length,
+            drawn: ourResults.filter(r => this.drawn).length,
             lost: ourResults.filter(r => this.lost(teamName, r)).length,
             goalsFor: _.sum(ourResults.map(r => this.goalsFor(teamName, r))),
             goalsAgainst: _.sum(ourResults.map(r => this.goalsAgainst(teamName, r))),
