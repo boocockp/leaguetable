@@ -8,6 +8,7 @@ Ideas
 - A timed output can be just a function that ranges over a time sequence input
 - Testing easy if time is just another input
 - If inputs are given to the functional model one at a time, it knows when they arrive and can decide how to cache them (or not)
+- Inputs can be given one at a time or as a list - xxxInput() takes either
 
 Concepts
 --------

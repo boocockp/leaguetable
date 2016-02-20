@@ -1,18 +1,14 @@
 'use strict';
 
-let resultData = [];
-
-let showLeagueTableFromResults = () => showLeagueTable(resultData);
+let resultInputSource = new InputSource();
 
 let enterResults = () => {
     let inputArea = document.getElementById('resultInput');
-    resultData = resultData.concat(parseCsvResults(inputArea.value));
+    resultInputSource.add(parseCsvResults(inputArea.value));
     inputArea.value = '';
-    showLeagueTableFromResults();
 };
 
 let parseCsvResults = (text) => text.trim().split('\n').filter( (l) => l.trim() ).map(parseCsvLine);
-
 
 let parseCsvLine = (line) => {
     let tokens = line.trim().split(/ *, */).map( (w) => w.trim() );
@@ -21,8 +17,8 @@ let parseCsvLine = (line) => {
 
 let initPage = () => {
     document.getElementById('enter').addEventListener('click', enterResults);
-    document.getElementById('alpha').addEventListener('click', showLeagueTableFromResults);
-    showLeagueTableFromResults();
+    //document.getElementById('alpha').addEventListener('click', showLeagueTable);
+    //showLeagueTable();
 };
 
 initPage();

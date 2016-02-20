@@ -3,11 +3,25 @@
 class LeagueTable {
 
     constructor() {
-        this._results = []
+        this._results = [];
+        this._listeners = [];
+    }
+
+    addChangeListener(listenerFn) {
+        this._listeners.push(listenerFn);
+    }
+
+    _notifyChange() {
+        this._listeners.forEach( l => l() );
+    }
+
+    _inputReceived() {
+        //setTimeout( () => this._notifyChange(), 0);
+        this._notifyChange();
     }
 
     get results() { return this._results }
-    set results(r) { this._results = r }
+    resultsInput(r) { this._results = this._results.concat(r); this._inputReceived(); }
 
     get leaguePositions() {
         return _.sortBy(this.allTeamStats, t => -t.points );

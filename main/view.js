@@ -18,7 +18,8 @@ let tableHtml = (leaguePositions) =>
         <tbody>
         ${leaguePositions.map(function(r) { return rowHtml(r); }).join('')}
         </tbody>
-        </table>`;
+    </table>
+    `;
 
 
 let rowHtml = (ts) =>
@@ -32,14 +33,19 @@ let rowHtml = (ts) =>
         <td>${ts.goalsAgainst}</td>
         <td>${ts.goalDifference}</td>
         <td>${ts.points}</td>
-        </tr>`;
+        </tr>
+        `;
 
 
-let showLeagueTable = (results) => {
-    let leagueTable = new LeagueTable();
-    leagueTable.results = results;
+
+let leagueTable = new LeagueTable();
+resultInputSource.addListener( results => leagueTable.resultsInput(results));
+
+
+let showLeagueTable = () => {
     let positions = document.getElementById('alpha').checked ? leagueTable.teamsByName : leagueTable.leaguePositions;
     document.getElementById('table').innerHTML = tableHtml(positions);
 };
+leagueTable.addChangeListener(showLeagueTable);
 
 
