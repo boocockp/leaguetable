@@ -36,7 +36,9 @@ let rowHtml = (ts) =>
 
 
 let showLeagueTable = (results) => {
-    let positions = document.getElementById('alpha').checked ? teamsByName(results) : leaguePositions(results);
+    let leagueTable = new LeagueTable();
+    leagueTable.results = results;
+    let positions = document.getElementById('alpha').checked ? leagueTable.teamsByName() : leagueTable.leaguePositions();
     document.getElementById('table').innerHTML = tableHtml(positions);
 };
 
