@@ -10,11 +10,11 @@ class LeagueTable {
     set results(r) { this._results = r }
 
     get leaguePositions() {
-        return _.sortBy(this.allTeamStats, (t) => -t.points );
+        return _.sortBy(this.allTeamStats, t => -t.points );
     }
 
     get teamsByName() {
-        return _.sortBy(this.allTeamStats, (t) => t.name );
+        return _.sortBy(this.allTeamStats, t => t.name );
     }
 
     get allTeamStats() {
@@ -22,8 +22,8 @@ class LeagueTable {
     }
 
     get teams() {
-        let homeTeams = this.results.map((r) => r.home.team);
-        let awayTeams = this.results.map((r) => r.away.team);
+        let homeTeams = this.results.map( r => r.home.team);
+        let awayTeams = this.results.map( r => r.away.team);
         return _.uniq(homeTeams.concat(awayTeams));
     }
 
@@ -32,19 +32,19 @@ class LeagueTable {
         return {
             name: teamName,
             games: ourResults.length,
-            won: ourResults.filter((r) => this.won(teamName, r)).length,
-            drawn: ourResults.filter((r) => this.drawn(r)).length,
-            lost: ourResults.filter((r) => this.lost(teamName, r)).length,
-            goalsFor: _.sum(ourResults.map((r) => this.goalsFor(teamName, r))),
-            goalsAgainst: _.sum(ourResults.map((r) => this.goalsAgainst(teamName, r))),
-            goalDifference: _.sum(ourResults.map((r) => this.goalsFor(teamName, r) - this.goalsAgainst(teamName, r))),
-            points: _.sum(ourResults.map((r) => this.pointsFor(teamName, r)))
+            won: ourResults.filter(r => this.won(teamName, r)).length,
+            drawn: ourResults.filter(r => this.drawnr).length,
+            lost: ourResults.filter(r => this.lost(teamName, r)).length,
+            goalsFor: _.sum(ourResults.map(r => this.goalsFor(teamName, r))),
+            goalsAgainst: _.sum(ourResults.map(r => this.goalsAgainst(teamName, r))),
+            goalDifference: _.sum(ourResults.map(r => this.goalsFor(teamName, r) - this.goalsAgainst(teamName, r))),
+            points: _.sum(ourResults.map(r => this.pointsFor(teamName, r)))
 
         }
     }
 
     teamResults(teamName) {
-        return this.results.filter( (r) => r.home.team == teamName || r.away.team == teamName);
+        return this.results.filter( r => r.home.team == teamName || r.away.team == teamName);
     }
 
     goalsFor (teamName, result) { return teamName == result.home.team ? result.home.goals : result.away.goals; }

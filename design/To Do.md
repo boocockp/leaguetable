@@ -7,6 +7,7 @@ Areas to explore
 - App as "worksheet" object
 - Input mechanism
 - Observing output changes
+- Teleprinter output when result(s) added
 - Persistence
 - Performance optimisation
 - Multiple inputs
