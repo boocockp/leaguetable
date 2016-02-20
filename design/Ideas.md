@@ -17,6 +17,12 @@ Concepts
 - The aim is to write the program without worrying about timing or caching the model
 - There are no actions - just inputs of various types to various input points
 
+Input Sources
+------------
+
+- Should be separate objects as will take many forms - need a common subscribe mechanism
+- Each output/property of a functional model is an input source for another model
+
 Useful tools
 ------------
 
@@ -33,3 +39,5 @@ Questions
 ---------
 - Should functional model objects own their input sequences, or just be given refs to them? 
   - Prob just a ref, as may have different impls and may want diff models against same inputs
+  
+  

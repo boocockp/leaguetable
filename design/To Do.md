@@ -7,7 +7,7 @@ Areas to explore
 - App as "worksheet" object
 - Input mechanism
 - Observing output changes
-- View controls like sort by name are inputs to a downstream view function
+- View controls like sort by name are inputs to a downstream view functional model
 - Teleprinter output when result(s) added
 - Persistence
 - Performance optimisation

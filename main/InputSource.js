@@ -2,8 +2,8 @@
 
 class InputSource {
 
-    constructor() {
-        this._inputs = [];
+    constructor(initialInputs) {
+        this._inputs = initialInputs || [];
         this._listeners = [];
     }
 
@@ -16,6 +16,7 @@ class InputSource {
 
     addListener(listenerFn) {
         this._listeners.push(listenerFn);
+        listenerFn(this._inputs)
     }
 
     _notifyChange(inputs) {
