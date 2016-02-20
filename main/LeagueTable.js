@@ -9,6 +9,7 @@ class LeagueTable {
 
     addChangeListener(listenerFn) {
         this._listeners.push(listenerFn);
+        listenerFn()
     }
 
     _notifyChange() {

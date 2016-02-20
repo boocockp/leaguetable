@@ -1,6 +1,7 @@
 'use strict';
 
 let resultInputSource = new InputSource();
+let alphaInputSource = new InputSource();
 
 let enterResults = () => {
     let inputArea = document.getElementById('resultInput');
@@ -17,8 +18,7 @@ let parseCsvLine = (line) => {
 
 let initPage = () => {
     document.getElementById('enter').addEventListener('click', enterResults);
-    //document.getElementById('alpha').addEventListener('click', showLeagueTable);
-    //showLeagueTable();
+    document.getElementById('alpha').addEventListener('click', e => alphaInputSource.add(e.target.checked));
 };
 
 initPage();

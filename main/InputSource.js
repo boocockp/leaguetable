@@ -7,6 +7,8 @@ class InputSource {
         this._listeners = [];
     }
 
+    get latest() { return _.last(this._inputs); }
+
     add(inputs) {
         this._inputs =  this._inputs.concat(inputs);
         this._notifyChange(inputs);

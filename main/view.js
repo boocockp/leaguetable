@@ -36,16 +36,15 @@ let rowHtml = (ts) =>
         </tr>
         `;
 
-
+let showLeagueTable = (sortAlpha) => {
+    let positions = sortAlpha ? leagueTable.teamsByName : leagueTable.leaguePositions;
+    document.getElementById('table').innerHTML = tableHtml(positions);
+};
 
 let leagueTable = new LeagueTable();
 resultInputSource.addListener( results => leagueTable.resultsInput(results));
+alphaInputSource.addListener( showLeagueTable );
 
-
-let showLeagueTable = () => {
-    let positions = document.getElementById('alpha').checked ? leagueTable.teamsByName : leagueTable.leaguePositions;
-    document.getElementById('table').innerHTML = tableHtml(positions);
-};
-leagueTable.addChangeListener(showLeagueTable);
+leagueTable.addChangeListener( () => showLeagueTable(alphaInputSource.latest));
 
 
