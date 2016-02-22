@@ -41,10 +41,15 @@ let showLeagueTable = (sortAlpha) => {
     document.getElementById('table').innerHTML = tableHtml(positions);
 };
 
-let leagueTable = new LeagueTable();
+var leagueTable = new LeagueTable();
 resultInputSource.addListener( results => leagueTable.resultsInput(results));
 alphaInputSource.addListener( showLeagueTable );
 
 leagueTable.addChangeListener( () => showLeagueTable(alphaInputSource.latest));
+
+// debugging
+leagueTable.teams.subscribe(x=> console.log('teams', x));
+leagueTable.teamResults('York').subscribe(x=> console.log('teamResults York', x));
+leagueTable.teamStats('York').subscribe(x=> console.log('teamStats York', x));
 
 

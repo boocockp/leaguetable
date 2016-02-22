@@ -9,11 +9,13 @@ Ideas
 - Testing easy if time is just another input
 - If inputs are given to the functional model one at a time, it knows when they arrive and can decide how to cache them (or not)
 - Inputs can be given one at a time or as a list - xxxInput() takes either
+- More control over deglitching if in control of triggering updates after inputs arrive
 
 Concepts
 --------
 - This is different to Redux - you don't specify how to mutate state, you specify how to calculate the outputs if you had all the inputs at once
 - It is not a function from an input and a state to a new state, it is a function from all the inputs so far to all the outputs
+- Updating the outputs when the inputs change is hidden from the programmer
 - The aim is to write the program without worrying about timing or caching the model
 - There are no actions - just inputs of various types to various input points
 
@@ -33,8 +35,10 @@ Implementation
 --------------
 
 - Define functions like unique and groupBy so they return same object if a new value doesn't change them, so don't need to recalculate downstream if memoized
+- If use immutable collections, easy to memoize as just need to know whether same instance or not
 - When an input arrives, defer recalculation so if many sent at once, deal with them all in one go
 - If a filter knew an incoming array could only have things added to the end, would just need to check those - and inputs are like that
+- 
 
 Questions
 ---------
