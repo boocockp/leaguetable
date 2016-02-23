@@ -18,3 +18,7 @@ Functional subclasses
 
 - These would be functions, not immutable objects
 - As their inputs changed, so would their outputs
+
+To Do
+-----
+- Memoize functions and return same instance if source has not changed

@@ -39,7 +39,7 @@ class LeagueTable {
     get teams() {
         let homeTeams = this.results.map( r => r.home.team);
         let awayTeams = this.results.map( r => r.away.team);
-        return homeTeams.withAdded(awayTeams).distinct();
+        return homeTeams.merge(awayTeams).distinct();
     }
 
     goalsFor (teamName, result) { return teamName == result.home.team ? result.home.goals : result.away.goals; }

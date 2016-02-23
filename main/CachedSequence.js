@@ -34,7 +34,7 @@ class CachedSequence {
     }
 
     map(expr) {
-        return new CachedSequence(this._updatedElements.map(expr));
+        return new MapCachedSequence(this, expr);
     }
 
     distinct() {
@@ -53,6 +53,10 @@ class CachedSequence {
         return this._updatedElements.join(sep);
     }
 
+    merge(otherSeq) {
+        return new MergeCachedSequence(this, otherSeq);
+    }
+
     get _updatedElements() {
         return this._elements;
     }
@@ -65,7 +69,7 @@ class FilterCachedSequence extends CachedSequence {
         super([]);
 
         this._source = source;
-        this._condition = condition;
+        this._expr = condition;
         this._sourceIndex = 0;
     }
 
@@ -75,10 +79,63 @@ class FilterCachedSequence extends CachedSequence {
     }
 
     _ensureUpToDate() {
-        let unprocessedSourceElements = this._source._elements.slice(this._sourceIndex);
-        this._elements = this._elements.concat(unprocessedSourceElements.filter(this._condition));
-        this._sourceIndex = this._source._elements.length
+        let sourceElements = this._source._updatedElements;
+        let unprocessedSourceElements = sourceElements.slice(this._sourceIndex);
+        this._elements = this._elements.concat(unprocessedSourceElements.filter(this._expr));
+        this._sourceIndex = sourceElements.length
     }
 
-
 }
+
+class MapCachedSequence extends CachedSequence {
+
+    constructor(source, expr) {
+        super([]);
+
+        this._source = source;
+        this._expr = expr;
+        this._sourceIndex = 0;
+    }
+
+    get _updatedElements() {
+        this._ensureUpToDate();
+        return this._elements;
+    }
+
+    _ensureUpToDate() {
+        let sourceElements = this._source._updatedElements;
+        let unprocessedSourceElements = sourceElements.slice(this._sourceIndex);
+        this._elements = this._elements.concat(unprocessedSourceElements.map(this._expr));
+        this._sourceIndex = sourceElements.length
+    }
+}
+
+class MergeCachedSequence extends CachedSequence {
+
+    constructor(source1, source2) {
+        super([]);
+
+        this._source1 = source1;
+        this._source2 = source2;
+        this._source1Index = 0;
+        this._source2Index = 0;
+    }
+
+    get _updatedElements() {
+        this._ensureUpToDate();
+        return this._elements;
+    }
+
+    _ensureUpToDate() {
+        let source1Elements = this._source1._updatedElements;
+        let unprocessedSource1Elements = source1Elements.slice(this._source1Index);
+        this._elements = this._elements.concat(unprocessedSource1Elements);
+        this._source1Index = source1Elements.length;
+
+        let source2Elements = this._source2._updatedElements;
+        let unprocessedSource2Elements = source2Elements.slice(this._source2Index);
+        this._elements = this._elements.concat(unprocessedSource2Elements);
+        this._source2Index = source2Elements.length
+    }
+}
+
