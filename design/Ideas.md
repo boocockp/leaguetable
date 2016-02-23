@@ -24,6 +24,8 @@ Input Sources
 
 - Should be separate objects as will take many forms - need a common subscribe mechanism
 - Each output/property of a functional model is an input source for another model
+- Need a single sequence of inputs per model
+- Persist only validated inputs
 
 Useful tools
 ------------
@@ -38,7 +40,7 @@ Implementation
 - If use immutable collections, easy to memoize as just need to know whether same instance or not
 - When an input arrives, defer recalculation so if many sent at once, deal with them all in one go
 - If a filter knew an incoming array could only have things added to the end, would just need to check those - and inputs are like that
-- 
+- Even with cached sequences, still need to memoize to store one for each argument eg by teamName
 
 Questions
 ---------

@@ -42,25 +42,6 @@ class LeagueTable {
         return homeTeams.withAdded(awayTeams).distinct();
     }
 
-    teamStats(teamName) {
-        let ourResults = this.teamResults(teamName);
-        return {
-            name: teamName,
-            games: ourResults.length,
-            won: ourResults.filter(r => this.won(teamName, r)).length,
-            drawn: ourResults.filter(r => this.drawn(r)).length,
-            lost: ourResults.filter(r => this.lost(teamName, r)).length,
-            goalsFor: ourResults.map(r => this.goalsFor(teamName, r)).sum(),
-            goalsAgainst: ourResults.map(r => this.goalsAgainst(teamName, r)).sum(),
-            goalDifference: ourResults.map(r => this.goalsFor(teamName, r) - this.goalsAgainst(teamName, r)).sum(),
-            points: ourResults.map(r => this.pointsFor(teamName, r)).sum()
-        }
-    }
-
-    teamResults(teamName) {
-        return this.results.filter( r => r.home.team == teamName || r.away.team == teamName);
-    }
-
     goalsFor (teamName, result) { return teamName == result.home.team ? result.home.goals : result.away.goals; }
     goalsAgainst(teamName, result) { return teamName == result.home.team ? result.away.goals : result.home.goals; }
     drawn(result) { return result.home.goals == result.away.goals; }
@@ -68,5 +49,26 @@ class LeagueTable {
     lost(teamName, result) { return this.goalsFor(teamName, result) < this.goalsAgainst(teamName, result);}
     pointsFor(teamName, result) { return this.won(teamName, result) ? 3 : this.drawn(result) ? 1 : 0; }
 }
+
+
+LeagueTable.prototype.teamStats = function(teamName) {
+    let ourResults = this.teamResults(teamName);
+    return {
+        name: teamName,
+        games: ourResults.length,
+        won: ourResults.filter(r => this.won(teamName, r)).length,
+        drawn: ourResults.filter(r => this.drawn(r)).length,
+        lost: ourResults.filter(r => this.lost(teamName, r)).length,
+        goalsFor: ourResults.map(r => this.goalsFor(teamName, r)).sum(),
+        goalsAgainst: ourResults.map(r => this.goalsAgainst(teamName, r)).sum(),
+        goalDifference: ourResults.map(r => this.goalsFor(teamName, r) - this.goalsAgainst(teamName, r)).sum(),
+        points: ourResults.map(r => this.pointsFor(teamName, r)).sum()
+    }
+}.memoize( (tn) => tn );
+
+LeagueTable.prototype.teamResults = function(teamName) {
+    return this.results.filter( r => r.home.team == teamName || r.away.team == teamName);
+}.memoize( (tn) => tn );
+
 
 

@@ -29,7 +29,6 @@ class CachedSequence {
     get length() { return this._updatedElements.length }
 
     filter(cond) {
-        //return new CachedSequence(this._updatedElements.filter(cond));
         return new FilterCachedSequence(this, cond);
 
     }
