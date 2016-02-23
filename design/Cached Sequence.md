@@ -11,3 +11,10 @@ Cached Sequences
 - Can these be integrated with Immutable.js?
 - Are these monads?
 - Has anyone done this already? eg lazy libraries?
+
+
+Functional subclasses
+=====================
+
+- These would be functions, not immutable objects
+- As their inputs changed, so would their outputs

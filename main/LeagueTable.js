@@ -22,7 +22,7 @@ class LeagueTable {
     }
 
     get results() { return this._results }
-    resultsInput(r) { this._results = this._results.add(r); this._inputReceived(); }
+    resultsInput(r) { this._results.add(r); this._inputReceived(); }
 
     get leaguePositions() {
         return this.allTeamStats.sort( t => -t.points );
@@ -39,7 +39,7 @@ class LeagueTable {
     get teams() {
         let homeTeams = this.results.map( r => r.home.team);
         let awayTeams = this.results.map( r => r.away.team);
-        return homeTeams.add(awayTeams).distinct();
+        return homeTeams.withAdded(awayTeams).distinct();
     }
 
     teamStats(teamName) {
