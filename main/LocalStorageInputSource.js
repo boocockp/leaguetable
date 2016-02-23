@@ -11,6 +11,10 @@ class LocalStorageInputSource extends InputSource {
 
     add(inputs) {
         super.add(inputs);
-        localStorage.setItem(this._key, JSON.stringify(this._inputs));
+        try {
+            localStorage.setItem(this._key, JSON.stringify(this._inputs));
+        } catch (e) {
+            console.error('Could not save inputs', e.message);
+        }
     }
 }
