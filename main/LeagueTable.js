@@ -3,7 +3,7 @@
 class LeagueTable {
 
     constructor() {
-        this._results = [];
+        this._results = new CachedSequence();
         this._listeners = [];
     }
 
@@ -22,14 +22,14 @@ class LeagueTable {
     }
 
     get results() { return this._results }
-    resultsInput(r) { this._results = this._results.concat(r); this._inputReceived(); }
+    resultsInput(r) { this._results = this._results.add(r); this._inputReceived(); }
 
     get leaguePositions() {
-        return _.sortBy(this.allTeamStats, t => -t.points );
+        return this.allTeamStats.sort( t => -t.points );
     }
 
     get teamsByName() {
-        return _.sortBy(this.allTeamStats, t => t.name );
+        return this.allTeamStats.sort( t => t.name );
     }
 
     get allTeamStats() {
@@ -39,7 +39,7 @@ class LeagueTable {
     get teams() {
         let homeTeams = this.results.map( r => r.home.team);
         let awayTeams = this.results.map( r => r.away.team);
-        return _.uniq(homeTeams.concat(awayTeams));
+        return homeTeams.add(awayTeams).distinct();
     }
 
     teamStats(teamName) {
@@ -48,13 +48,12 @@ class LeagueTable {
             name: teamName,
             games: ourResults.length,
             won: ourResults.filter(r => this.won(teamName, r)).length,
-            drawn: ourResults.filter(r => this.drawn).length,
+            drawn: ourResults.filter(r => this.drawn(r)).length,
             lost: ourResults.filter(r => this.lost(teamName, r)).length,
-            goalsFor: _.sum(ourResults.map(r => this.goalsFor(teamName, r))),
-            goalsAgainst: _.sum(ourResults.map(r => this.goalsAgainst(teamName, r))),
-            goalDifference: _.sum(ourResults.map(r => this.goalsFor(teamName, r) - this.goalsAgainst(teamName, r))),
-            points: _.sum(ourResults.map(r => this.pointsFor(teamName, r)))
-
+            goalsFor: ourResults.map(r => this.goalsFor(teamName, r)).sum(),
+            goalsAgainst: ourResults.map(r => this.goalsAgainst(teamName, r)).sum(),
+            goalDifference: ourResults.map(r => this.goalsFor(teamName, r) - this.goalsAgainst(teamName, r)).sum(),
+            points: ourResults.map(r => this.pointsFor(teamName, r)).sum()
         }
     }
 
