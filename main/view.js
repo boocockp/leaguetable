@@ -36,8 +36,12 @@ let rowHtml = (ts) =>
         </tr>
         `;
 
+var getLeagueTable = function(sortAlpha) {
+    return sortAlpha ? leagueTable.teamsByName : leagueTable.leaguePositions;
+}.time('getLeagueTable');
+
 let showLeagueTable = (sortAlpha) => {
-    let positions = sortAlpha ? leagueTable.teamsByName : leagueTable.leaguePositions;
+    var positions = getLeagueTable(sortAlpha);
     document.getElementById('table').innerHTML = tableHtml(positions);
 };
 

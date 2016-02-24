@@ -17,7 +17,6 @@ class LeagueTable {
     }
 
     _inputReceived() {
-        //setTimeout( () => this._notifyChange(), 0);
         this._notifyChange();
     }
 

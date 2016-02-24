@@ -30,7 +30,6 @@ class CachedSequence {
 
     filter(cond) {
         return new FilterCachedSequence(this, cond);
-
     }
 
     map(expr) {
@@ -38,7 +37,7 @@ class CachedSequence {
     }
 
     distinct() {
-        return new CachedSequence(_.uniq(this._updatedElements));
+        return new DistinctCachedSequence(this);
     }
 
     sort(expr) {
@@ -46,7 +45,8 @@ class CachedSequence {
     }
 
     sum() {
-        return _.sum(this._updatedElements);
+        this._sumAggregator = this._sumAggregator || new SumAggregator(this);
+        return this._sumAggregator.value;
     }
 
     join(sep) {
@@ -94,16 +94,30 @@ class FunctionalCachedSequence extends CachedSequence {
 class FilterCachedSequence extends FunctionalCachedSequence {
 
     constructor(source, condition) {
-        super([source], (els) => els.filter(this._expr));
-        this._expr = condition;
+        super([source], (els) => els.filter(condition));
+    }
+}
+
+class DistinctCachedSequence extends FunctionalCachedSequence {
+
+    constructor(source) {
+        let values = new Set();
+        let isNew = (v) => {
+            if (values.has(v)) {
+                return false;
+            } else {
+                values.add(v);
+                return true;
+            }
+        };
+        super([source], (els) => els.filter(isNew));
     }
 }
 
 class MapCachedSequence extends FunctionalCachedSequence {
 
     constructor(source, expr) {
-        super([source], (els) => els.map(this._expr));
-        this._expr = expr;
+        super([source], (els) => els.map(expr));
     }
 }
 
@@ -112,5 +126,31 @@ class MergeCachedSequence extends FunctionalCachedSequence {
     constructor(...sources) {
         super(sources, (els) => els );
     }
+}
+
+class SumAggregator {
+
+    constructor(source) {
+        this._source = source;
+        this._sourceIndex = 0;
+        this._value = 0;
+    }
+
+    get value() {
+        this._ensureUpToDate();
+        return this._value;
+    }
+
+    _ensureUpToDate() {
+        let sourceElements = this._source._updatedElements;
+        let unprocessedSourceElements = sourceElements.slice(this._sourceIndex);
+        this._value = this._processElements(this._value, unprocessedSourceElements);
+        this._sourceIndex = sourceElements.length;
+    }
+
+    _processElements(oldValue, elements) {
+        return oldValue + _.sum(elements);
+    }
+
 }
 
