@@ -51,7 +51,7 @@ class LeagueTable {
 }
 
 
-LeagueTable.prototype.teamStats = function(teamName) {
+LeagueTable.prototype.teamStats = _.memoize(function teamStats(teamName) {
     let ourResults = this.teamResults(teamName);
     return {
         name: teamName,
@@ -64,11 +64,10 @@ LeagueTable.prototype.teamStats = function(teamName) {
         goalDifference: ourResults.map(r => this.goalsFor(teamName, r) - this.goalsAgainst(teamName, r)).sum(),
         points: ourResults.map(r => this.pointsFor(teamName, r)).sum()
     }
-}.memoize( (tn) => tn );
+},  function(tn) { return tn + this._results.length } );
 
-LeagueTable.prototype.teamResults = function(teamName) {
+LeagueTable.prototype.teamResults = _.memoize(function teamResults(teamName) {
     return this.results.filter( r => r.home.team == teamName || r.away.team == teamName);
-}.memoize( (tn) => tn );
-
+}, function (tn) { return tn + this._results.length } );
 
 
