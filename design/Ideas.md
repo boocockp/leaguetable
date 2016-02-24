@@ -18,6 +18,9 @@ Concepts
 - Updating the outputs when the inputs change is hidden from the programmer
 - The aim is to write the program without worrying about timing or caching the model
 - There are no actions - just inputs of various types to various input points
+- The client does all the work, the server just stores data
+- Client sends inputs to server to append to input stream
+- Clients are more powerful than servers - memory and spare CPU - but still worth optimising
 
 Input Sources
 ------------

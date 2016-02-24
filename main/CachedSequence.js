@@ -58,84 +58,59 @@ class CachedSequence {
     }
 
     get _updatedElements() {
+        this._ensureUpToDate();
         return this._elements;
     }
+
+    _ensureUpToDate() {}
 }
 
 
-class FilterCachedSequence extends CachedSequence {
+class FunctionalCachedSequence extends CachedSequence {
+
+    constructor(sources, processElementsFn) {
+        super([]);
+
+        this._sources = sources;
+        this._processElementsFn = processElementsFn;
+        this._sourceIndexes = sources.map( () => 0 );
+    }
+
+    _ensureUpToDate() {
+        this._sources.forEach( (source, i) => {
+            let sourceElements = source._updatedElements;
+            let unprocessedSourceElements = sourceElements.slice(this._sourceIndexes[i]);
+            this._elements = this._elements.concat(this._processElements(unprocessedSourceElements));
+            this._sourceIndexes[i] = sourceElements.length;
+        });
+    }
+
+    _processElements(elements) {
+        return this._processElementsFn(elements);
+    }
+
+}
+
+class FilterCachedSequence extends FunctionalCachedSequence {
 
     constructor(source, condition) {
-        super([]);
-
-        this._source = source;
+        super([source], (els) => els.filter(this._expr));
         this._expr = condition;
-        this._sourceIndex = 0;
     }
-
-    get _updatedElements() {
-        this._ensureUpToDate();
-        return this._elements;
-    }
-
-    _ensureUpToDate() {
-        let sourceElements = this._source._updatedElements;
-        let unprocessedSourceElements = sourceElements.slice(this._sourceIndex);
-        this._elements = this._elements.concat(unprocessedSourceElements.filter(this._expr));
-        this._sourceIndex = sourceElements.length
-    }
-
 }
 
-class MapCachedSequence extends CachedSequence {
+class MapCachedSequence extends FunctionalCachedSequence {
 
     constructor(source, expr) {
-        super([]);
-
-        this._source = source;
+        super([source], (els) => els.map(this._expr));
         this._expr = expr;
-        this._sourceIndex = 0;
-    }
-
-    get _updatedElements() {
-        this._ensureUpToDate();
-        return this._elements;
-    }
-
-    _ensureUpToDate() {
-        let sourceElements = this._source._updatedElements;
-        let unprocessedSourceElements = sourceElements.slice(this._sourceIndex);
-        this._elements = this._elements.concat(unprocessedSourceElements.map(this._expr));
-        this._sourceIndex = sourceElements.length
     }
 }
 
-class MergeCachedSequence extends CachedSequence {
+class MergeCachedSequence extends FunctionalCachedSequence {
 
-    constructor(source1, source2) {
-        super([]);
-
-        this._source1 = source1;
-        this._source2 = source2;
-        this._source1Index = 0;
-        this._source2Index = 0;
-    }
-
-    get _updatedElements() {
-        this._ensureUpToDate();
-        return this._elements;
-    }
-
-    _ensureUpToDate() {
-        let source1Elements = this._source1._updatedElements;
-        let unprocessedSource1Elements = source1Elements.slice(this._source1Index);
-        this._elements = this._elements.concat(unprocessedSource1Elements);
-        this._source1Index = source1Elements.length;
-
-        let source2Elements = this._source2._updatedElements;
-        let unprocessedSource2Elements = source2Elements.slice(this._source2Index);
-        this._elements = this._elements.concat(unprocessedSource2Elements);
-        this._source2Index = source2Elements.length
+    constructor(...sources) {
+        super(sources, (els) => els );
     }
 }
 
