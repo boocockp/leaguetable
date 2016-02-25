@@ -16,16 +16,6 @@ class CachedSequence {
         }
     }
 
-    withAdded(entries) {
-        if (entries instanceof CachedSequence) {
-            return new CachedSequence(this._elements.concat(entries._elements))
-        } else if (_.isArray(entries)) {
-            return new CachedSequence(this._elements.concat(entries))
-        } else {
-            return new CachedSequence(this._elements.concat([entries]))
-        }
-    }
-
     get length() { return this._updatedElements.length }
 
     filter(cond) {

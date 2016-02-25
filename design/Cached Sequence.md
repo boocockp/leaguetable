@@ -12,12 +12,22 @@ Cached Sequences
 - Are these monads?
 - Has anyone done this already? eg lazy libraries?
 
+Important
+---------
+- When is a (functional) cached sequence still valid - do you need a version?  
+- What about sorting results. for example, when size deson't change
+
 
 Functional subclasses
 =====================
 
 - These would be functions, not immutable objects
 - As their inputs changed, so would their outputs
+
+Performance
+-----------
+
+- Using Immutable.js List doubled time to process 100k results - profile showed much internal housekeeping
 
 To Do
 -----
