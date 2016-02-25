@@ -3,7 +3,7 @@
 class CachedSequence {
 
     constructor(elements) {
-        this._elements = (elements || []).slice()
+        this._elements = new Immutable.List(elements || [])
     }
 
     add(entries) {
@@ -16,17 +16,7 @@ class CachedSequence {
         }
     }
 
-    withAdded(entries) {
-        if (entries instanceof CachedSequence) {
-            return new CachedSequence(this._elements.concat(entries._elements))
-        } else if (_.isArray(entries)) {
-            return new CachedSequence(this._elements.concat(entries))
-        } else {
-            return new CachedSequence(this._elements.concat([entries]))
-        }
-    }
-
-    get length() { return this._updatedElements.length }
+    get length() { return this._updatedElements.size }
 
     filter(cond) {
         return new FilterCachedSequence(this, cond);
@@ -40,8 +30,8 @@ class CachedSequence {
         return new DistinctCachedSequence(this);
     }
 
-    sort(expr) {
-        return new CachedSequence(_.sortBy(this._updatedElements, expr));
+    sort(expr) {  // TODO have SortCachedSequence
+        return new CachedSequence(this._updatedElements.sortBy(expr));
     }
 
     sum() {
@@ -81,7 +71,7 @@ class FunctionalCachedSequence extends CachedSequence {
             let sourceElements = source._updatedElements;
             let unprocessedSourceElements = sourceElements.slice(this._sourceIndexes[i]);
             this._elements = this._elements.concat(this._processElements(unprocessedSourceElements));
-            this._sourceIndexes[i] = sourceElements.length;
+            this._sourceIndexes[i] = sourceElements.size;
         });
     }
 
@@ -145,11 +135,11 @@ class SumAggregator {
         let sourceElements = this._source._updatedElements;
         let unprocessedSourceElements = sourceElements.slice(this._sourceIndex);
         this._value = this._processElements(this._value, unprocessedSourceElements);
-        this._sourceIndex = sourceElements.length;
+        this._sourceIndex = sourceElements.size;
     }
 
     _processElements(oldValue, elements) {
-        return oldValue + _.sum(elements);
+        return oldValue + elements.reduce( (acc, value) => acc+ value, 0 );
     }
 
 }
