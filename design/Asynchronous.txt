@@ -1,0 +1,31 @@
+Asynchronous Issues
+===================
+
+Inputs
+------
+
+- Inputs initiated from outside
+- Inputs naturally async
+- Inputs sequential though async
+- Inputs must all be reproduced
+
+Lookups
+-------
+
+- Lookups initiated from inside
+- Don't need to be reproduced in same sequence
+- Would normally only do lookup for latest value
+- Often want to cache the returned value
+
+Use in functional model
+-----------------------
+
+- Want to use like a normal function
+- When evaluated first time, needs to initiate async call and return placeholder (undefined?)
+- When async call returns, need to cache the value and force re-evaluation of the sheet
+- Need to ensure as little as possible is re-evaluated
+- Need to debounce rate of re-evaluation
+
+Async updates
+-------------
+- If a retrieved value can update, cache it and force re-evaluation

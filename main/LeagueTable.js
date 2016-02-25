@@ -4,9 +4,13 @@ class LeagueTable {
 
     constructor() {
         this._results = new CachedSequence();
+        this._version = 0;
         this._listeners = [];
+
+        this._cachedValues = {};
     }
 
+    // implementation
     addChangeListener(listenerFn) {
         this._listeners.push(listenerFn);
         listenerFn()
@@ -17,12 +21,15 @@ class LeagueTable {
     }
 
     _inputReceived() {
+        this._version++;
         this._notifyChange();
     }
+
 
     get results() { return this._results }
     resultsInput(r) { this._results.add(r); this._inputReceived(); }
 
+    // business logic
     get leaguePositions() {
         return this.allTeamStats.sort( t => -t.points );
     }
@@ -41,6 +48,22 @@ class LeagueTable {
         return homeTeams.merge(awayTeams).distinct();
     }
 
+    manager(teamName) {
+        function getValue(name, callback) {
+            setTimeout( () => callback(`Mr ${name}`), 2000)
+        }
+
+        let self = this;
+        if (this._cachedValues[teamName] === undefined) {
+            getValue( teamName, function(v) {
+                console.log('getValue callback', v);
+                this._cachedValues[teamName] = v; this._inputReceived()}.bind(this) );
+        }
+
+        return this._cachedValues[teamName];
+
+    }
+
     goalsFor (teamName, result) { return teamName == result.home.team ? result.home.goals : result.away.goals; }
     goalsAgainst(teamName, result) { return teamName == result.home.team ? result.away.goals : result.home.goals; }
     drawn(result) { return result.home.goals == result.away.goals; }
@@ -54,6 +77,7 @@ LeagueTable.prototype.teamStats = _.memoize(function teamStats(teamName) {
     let ourResults = this.teamResults(teamName);
     return {
         name: teamName,
+        manager: this.manager(teamName),
         games: ourResults.length,
         won: ourResults.filter(r => this.won(teamName, r)).length,
         drawn: ourResults.filter(r => this.drawn(r)).length,
@@ -63,10 +87,10 @@ LeagueTable.prototype.teamStats = _.memoize(function teamStats(teamName) {
         goalDifference: ourResults.map(r => this.goalsFor(teamName, r) - this.goalsAgainst(teamName, r)).sum(),
         points: ourResults.map(r => this.pointsFor(teamName, r)).sum()
     }
-},  function(tn) { return tn + this._results.length } );
+},  function(tn) { return tn + this._version } );
 
 LeagueTable.prototype.teamResults = _.memoize(function teamResults(teamName) {
     return this.results.filter( r => r.home.team == teamName || r.away.team == teamName);
-}, function (tn) { return tn + this._results.length } );
+}, function (tn) { return tn + this._version } );
 
 

@@ -5,6 +5,7 @@ let tableHtml = (leaguePositions) =>
         <thead>
         <tr>
         <th>Team</th>
+        <th>Manager</th>
         <th>Games</th>
         <th>Won</th>
         <th>Drawn</th>
@@ -25,6 +26,7 @@ let tableHtml = (leaguePositions) =>
 let rowHtml = (ts) =>
        `<tr>
         <td>${ts.name}</td>
+        <td>${ts.manager}</td>
         <td>${ts.games}</td>
         <td>${ts.won}</td>
         <td>${ts.drawn}</td>

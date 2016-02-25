@@ -39,6 +39,7 @@ Useful tools
 Implementation
 --------------
 
+- There are two ways of doing this: push new values down, or pull from bottom, cache and invalidate
 - Define functions like unique and groupBy so they return same object if a new value doesn't change them, so don't need to recalculate downstream if memoized
 - If use immutable collections, easy to memoize as just need to know whether same instance or not
 - When an input arrives, defer recalculation so if many sent at once, deal with them all in one go
