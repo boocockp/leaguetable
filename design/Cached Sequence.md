@@ -19,6 +19,11 @@ Functional subclasses
 - These would be functions, not immutable objects
 - As their inputs changed, so would their outputs
 
+Performance
+-----------
+
+- Using Immutable.js List doubled time to process 100k results - profile showed much internal housekeeping
+
 To Do
 -----
 - Memoize functions and return same instance if source has not changed
