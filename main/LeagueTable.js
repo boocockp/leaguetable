@@ -7,7 +7,7 @@ class LeagueTable {
         this._version = 0;
         this._listeners = [];
 
-        this._cachedValues = {};
+        this._cachedJsonData = {};
     }
 
     // implementation
@@ -29,6 +29,24 @@ class LeagueTable {
     get results() { return this._results }
     resultsInput(r) { this._results.add(r); this._inputReceived(); }
 
+    // helpers
+    getJsonData(url, propertyPath) {
+        function getValue(url, callback, errorCallback) {
+            $.getJSON(url).done(callback).fail(errorCallback);
+        }
+
+        if (this._cachedJsonData[url] === undefined) {
+            getValue( url, function(data) {
+                this._cachedJsonData[url] = data; this._inputReceived()
+            }.bind(this));
+            this._cachedJsonData[url] = {};
+        }
+
+        return _.get(this._cachedJsonData[url], propertyPath) || "";
+    }
+
+
+
     // business logic
     get leaguePositions() {
         return this.allTeamStats.sort( t => -t.points );
@@ -39,7 +57,7 @@ class LeagueTable {
     }
 
     get allTeamStats() {
-        return (() => this.teams.map( (t) => this.teamStats(t))).time('allTeamStats')();
+        return this.teams.map( t => this.teamStats(t));
     }
 
     get teams() {
@@ -49,20 +67,8 @@ class LeagueTable {
     }
 
     manager(teamName) {
-        function getValue(name, callback, errorCallback) {
-            let teamKey = teamName.toLowerCase().replace(/ /g, '_');
-            $.getJSON(`/leaguetable/main/data/teams/${teamKey}.json`).done(callback).fail(errorCallback);
-        }
-
-        if (this._cachedValues[teamName] === undefined) {
-            getValue( teamName, function(teamData) {
-                this._cachedValues[teamName] = teamData; this._inputReceived()
-            }.bind(this));
-            this._cachedValues[teamName] = {};
-        }
-
-        return this._cachedValues[teamName].manager || "";
-
+        let teamKey = teamName.toLowerCase().replace(/ /g, '_');
+        return this.getJsonData(`/leaguetable/main/data/teams/${teamKey}.json`, 'manager');
     }
 
     goalsFor (teamName, result) { return teamName == result.home.team ? result.home.goals : result.away.goals; }
