@@ -28,6 +28,7 @@ Performance
 -----------
 
 - Using Immutable.js List doubled time to process 100k results - profile showed much internal housekeeping
+- Having a count aggregator with a condition could save storing elements
 
 To Do
 -----

@@ -45,8 +45,6 @@ class LeagueTable {
         return _.get(this._cachedJsonData[url], propertyPath) || "";
     }
 
-
-
     // business logic
     get leaguePositions() {
         return this.allTeamStats.sort( t => -t.points );
@@ -98,6 +96,6 @@ LeagueTable.prototype.teamStats = _.memoize(function teamStats(teamName) {
 
 LeagueTable.prototype.teamResults = _.memoize(function teamResults(teamName) {
     return this.results.filter( r => r.home.team == teamName || r.away.team == teamName);
-}, function (tn) { return tn + this._version } );
+}, function (tn) { return tn + this._results.length } );
 
 

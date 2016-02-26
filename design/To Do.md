@@ -9,7 +9,7 @@ Areas to explore
 - Input mechanism
 - Observing output changes
 - View controls like sort by name are inputs to a downstream view functional model
-- Teleprinter output when result(s) added
+- Teleprinter output when result(s) added - an action
 - Persistence
 - Performance optimisation
 - Multiple inputs
