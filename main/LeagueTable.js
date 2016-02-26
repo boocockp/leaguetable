@@ -49,18 +49,19 @@ class LeagueTable {
     }
 
     manager(teamName) {
-        function getValue(name, callback) {
-            setTimeout( () => callback(`Mr ${name}`), 2000)
+        function getValue(name, callback, errorCallback) {
+            let teamKey = teamName.toLowerCase().replace(/ /g, '_');
+            $.getJSON(`/leaguetable/main/data/teams/${teamKey}.json`).done(callback).fail(errorCallback);
         }
 
-        let self = this;
         if (this._cachedValues[teamName] === undefined) {
-            getValue( teamName, function(v) {
-                console.log('getValue callback', v);
-                this._cachedValues[teamName] = v; this._inputReceived()}.bind(this) );
+            getValue( teamName, function(teamData) {
+                this._cachedValues[teamName] = teamData; this._inputReceived()
+            }.bind(this));
+            this._cachedValues[teamName] = {};
         }
 
-        return this._cachedValues[teamName];
+        return this._cachedValues[teamName].manager || "";
 
     }
 

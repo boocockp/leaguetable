@@ -1,0 +1,63 @@
+{
+  "Arsenal": {
+    "manager": "Mr Arsenal"
+  },
+  "Aston Villa": {
+    "manager": "Mr Aston Villa"
+  },
+  "Cardiff": {
+    "manager": "Mr Cardiff"
+  },
+  "Chelsea": {
+    "manager": "Mr Chelsea"
+  },
+  "Crystal Palace	": {
+    "manager": "Mr Crystal Palace"
+  },
+  "Everton	": {
+    "manager": "Mr Everto"
+  },
+  "Fulham	": {
+    "manager": "Mr Fulham"
+  },
+  "Hull	": {
+    "manager": "Mr Hull"
+  },
+  "Liverpool	": {
+    "manager": "Mr Liverpool"
+  },
+  "Man City": {
+    "manager": "Mr Man City"
+  },
+  "Man United	": {
+    "manager": "Mr Man United"
+  },
+  "Newcastle	": {
+    "manager": "Mr Newcastle"
+  },
+  "Norwich	": {
+    "manager": "Mr Norwich"
+  },
+  "Southampton	": {
+    "manager": "Mr Southampton"
+  },
+  "Stoke": {
+    "manager": "Mr Stoke"
+  },
+  "Sunderland	": {
+    "manager": "Mr Sunderland"
+  },
+  "Swansea	": {
+    "manager": "Mr Swansea"
+  },
+  "Tottenham	": {
+    "manager": "Mr Tottenham"
+  },
+  "West Brom	": {
+    "manager": "Mr West Brom"
+  },
+  "West Ham": {
+    "manager": "Mr West Ham"
+  }
+}
+

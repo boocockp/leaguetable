@@ -21,6 +21,16 @@ Concepts
 - The client does all the work, the server just stores data
 - Client sends inputs to server to append to input stream
 - Clients are more powerful than servers - memory and spare CPU - but still worth optimising
+- If decide to do on server - will all run there on node anyway
+
+Environmental Factors
+---------------------
+
+- Server CPU vs Client
+- Server memory vs Client
+- Bandwidth
+- Zipping performance
+- JavaScript performance
 
 Input Sources
 ------------
@@ -45,6 +55,11 @@ Implementation
 - When an input arrives, defer recalculation so if many sent at once, deal with them all in one go
 - If a filter knew an incoming array could only have things added to the end, would just need to check those - and inputs are like that
 - Even with cached sequences, still need to memoize to store one for each argument eg by teamName
+
+Asynchronous functions
+----------------------
+- Need care on when to trigger inputReceived, as if do it directly in callback can cause a loop
+- Need to know the call is in progress so don't do it again
 
 Questions
 ---------
