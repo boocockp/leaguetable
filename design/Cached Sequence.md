@@ -24,6 +24,11 @@ Functional subclasses
 - These would be functions, not immutable objects
 - As their inputs changed, so would their outputs
 
+Simple expressions
+------------------
+- To do simple expressions based on one or more functions, would need to use map (for one) or combine (for multiple) with a function
+- Easier to use if could just have a simple expression, especially in a worksheet
+
 Performance
 -----------
 
@@ -36,6 +41,10 @@ Functional model construction
 - Constructing network and keeping it intact and reusing the functions is key to performance
 - Maybe a CachedSequence is primarily a function, with a value property to actually calculate
 
+NON-cached sequences
+--------------------
+
+- If you know you don't care about old values, you could not cache them, and just have an index of where you are
+
 To Do
 -----
-- Memoize functions and return same instance if source has not changed

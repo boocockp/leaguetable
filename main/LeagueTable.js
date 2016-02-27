@@ -4,7 +4,6 @@ class LeagueTable {
 
     constructor() {
         this._results = new CachedSequence();
-        this._version = 0;
         this._listeners = [];
 
         this._cachedJsonData = {};
@@ -25,7 +24,6 @@ class LeagueTable {
     }
 
     _inputReceived() {
-        this._version++;
         this._notifyChange();
     }
 
@@ -69,6 +67,8 @@ class LeagueTable {
 
     // model
     buildModel() {
+        let aggregate = this.aggregate;
+
         let homeTeams = this.results.map( r => r.home.team);
         let awayTeams = this.results.map( r => r.away.team);
         let teams = homeTeams.merge(awayTeams).distinct();
@@ -78,9 +78,9 @@ class LeagueTable {
             return this.getJsonData(`/leaguetable/main/data/teams/${teamKey}.json`, 'manager');
         };
 
-        let teamResults = _.memoize((teamName) => {
+        let teamResults = (teamName) => {
             return this.results.filter( r => r.home.team == teamName || r.away.team == teamName);
-        }, function(tn) { return tn });
+        };
 
         let goalsFor = (teamName, result) => teamName == result.home.team ? result.home.goals : result.away.goals;
         let goalsAgainst = (teamName, result) => teamName == result.home.team ? result.away.goals : result.home.goals;
@@ -89,9 +89,9 @@ class LeagueTable {
         let lost = (teamName, result) => goalsFor(teamName, result) < goalsAgainst(teamName, result);
         let pointsFor = (teamName, result) => won(teamName, result) ? 3 : drawn(result) ? 1 : 0;
 
-        let teamStats = _.memoize( teamName => {
+        let teamStats = teamName => {
             let ourResults = teamResults(teamName);
-            return this.aggregate({
+            return aggregate({
                 name: teamName,
                 manager: manager(teamName),
                 games: ourResults.count(),
@@ -103,7 +103,7 @@ class LeagueTable {
                 goalDifference: ourResults.map(r => goalsFor(teamName, r) - goalsAgainst(teamName, r)).sum(),
                 points: ourResults.map(r => pointsFor(teamName, r)).sum()
             })
-        }, function(tn) { return tn });
+        };
 
         let allTeamStats = teams.map( t => teamStats(t));
         let leaguePositions = allTeamStats.sort( t => -t.points );
