@@ -36,25 +36,25 @@ class CachedSequence {
 
     sum() {
         this._sumAggregator = this._sumAggregator || new SumAggregator(this);
-        return this._sumAggregator.value;
-    }
-
-    sumFn() {
-        this._sumAggregator = this._sumAggregator || new SumAggregator(this);
         return this._sumAggregator;
     }
 
-    countFn() {
+    count() {
         this._countAggregator = this._countAggregator || new CountAggregator(this);
         return this._countAggregator;
     }
 
-    join(sep) {
-        return this._updatedElements.join(sep);
-    }
-
     merge(otherSeq) {
         return new MergeCachedSequence(this, otherSeq);
+    }
+
+    join(sep) {
+        var els = this.value;
+        return els.join(sep);
+    }
+
+    get value() {
+        return this._resolve(this._updatedElements);
     }
 
     get _updatedElements() {
@@ -63,6 +63,22 @@ class CachedSequence {
     }
 
     _ensureUpToDate() {}
+
+    _resolve(o) {
+        if (_.isArray(o)) {
+            return o.map( this._resolve );
+        }
+
+        if (_.isObject(o)) {
+            return _.mapValues(o, function(v) {
+                return _.hasIn(v, 'value') ? v.value : v;
+            });
+        }
+
+        return o;
+    }
+
+
 }
 
 
