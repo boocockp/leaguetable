@@ -56,6 +56,8 @@ Implementation
 - If a filter knew an incoming array could only have things added to the end, would just need to check those - and inputs are like that
 - Even with cached sequences, still need to memoize to store one for each argument eg by teamName
 - With async results and versioning may do recalculation of everything after each aync result received
+- Updates to functions: just replace whole model and replay the results
+- Build a model as a network of cached sequences in a single function, expose some or all properties for value and notifications
 
 Asynchronous functions
 ----------------------

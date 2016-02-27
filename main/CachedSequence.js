@@ -31,12 +31,22 @@ class CachedSequence {
     }
 
     sort(expr) {
-        return new CachedSequence(_.sortBy(this._updatedElements, expr));
+        return new SortCachedSequence(this, expr);
     }
 
     sum() {
         this._sumAggregator = this._sumAggregator || new SumAggregator(this);
         return this._sumAggregator.value;
+    }
+
+    sumFn() {
+        this._sumAggregator = this._sumAggregator || new SumAggregator(this);
+        return this._sumAggregator;
+    }
+
+    countFn() {
+        this._countAggregator = this._countAggregator || new CountAggregator(this);
+        return this._countAggregator;
     }
 
     join(sep) {
@@ -70,13 +80,20 @@ class FunctionalCachedSequence extends CachedSequence {
         this._sources.forEach( (source, i) => {
             let sourceElements = source._updatedElements;
             let unprocessedSourceElements = sourceElements.slice(this._sourceIndexes[i]);
-            this._elements = this._elements.concat(this._processElements(unprocessedSourceElements));
-            this._sourceIndexes[i] = sourceElements.length;
+            if (unprocessedSourceElements.length) {
+                var elementsPlusNew = this._elements.concat(this._processNewElements(unprocessedSourceElements));
+                this._elements = this._processAllElements(elementsPlusNew);
+                this._sourceIndexes[i] = sourceElements.length;
+            }
         });
     }
 
-    _processElements(elements) {
+    _processNewElements(elements) {
         return this._processElementsFn(elements);
+    }
+
+    _processAllElements(elements) {
+        return elements;
     }
 
 }
@@ -85,6 +102,18 @@ class FilterCachedSequence extends FunctionalCachedSequence {
 
     constructor(source, condition) {
         super([source], (els) => els.filter(condition));
+    }
+}
+
+class SortCachedSequence extends FunctionalCachedSequence {
+
+    constructor(source, expr) {
+        super([source], els => els);
+        this._expr = expr;
+    }
+
+    _processAllElements(elements) {
+        return _.sortBy(elements, this._expr);
     }
 }
 
@@ -139,7 +168,33 @@ class SumAggregator {
     }
 
     _processElements(oldValue, elements) {
-        return oldValue + _.sum(elements);
+        return oldValue + (_.sum(elements) || 0);
+    }
+
+}
+
+class CountAggregator {
+
+    constructor(source) {
+        this._source = source;
+        this._sourceIndex = 0;
+        this._value = 0;
+    }
+
+    get value() {
+        this._ensureUpToDate();
+        return this._value;
+    }
+
+    _ensureUpToDate() {
+        let sourceElements = this._source._updatedElements;
+        let unprocessedSourceElements = sourceElements.slice(this._sourceIndex);
+        this._value = this._processElements(this._value, unprocessedSourceElements);
+        this._sourceIndex = sourceElements.length;
+    }
+
+    _processElements(oldValue, elements) {
+        return oldValue + elements.length;
     }
 
 }

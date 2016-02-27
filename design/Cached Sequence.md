@@ -29,6 +29,12 @@ Performance
 
 - Using Immutable.js List doubled time to process 100k results - profile showed much internal housekeeping
 - Having a count aggregator with a condition could save storing elements
+- Filter by property function - put all values in map of CachedSequences on first call, use from there, update each new one to correct array
+
+Functional model construction
+-----------------------------
+- Constructing network and keeping it intact and reusing the functions is key to performance
+- Maybe a CachedSequence is primarily a function, with a value property to actually calculate
 
 To Do
 -----

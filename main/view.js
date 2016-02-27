@@ -40,12 +40,12 @@ let rowHtml = (ts) =>
 
 var getLeagueTable = function(sortAlpha) {
     return sortAlpha ? leagueTable.teamsByName : leagueTable.leaguePositions;
-}.time('getLeagueTable');
+};
 
-let showLeagueTable = (sortAlpha) => {
+let showLeagueTable = function(sortAlpha) {
     var positions = getLeagueTable(sortAlpha);
     document.getElementById('table').innerHTML = tableHtml(positions);
-};
+}.time('showLeagueTable');
 
 let leagueTable = new LeagueTable();
 resultInputSource.addListener( results => leagueTable.resultsInput(results));
