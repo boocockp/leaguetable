@@ -47,8 +47,6 @@ let showLeagueTable = function(sortAlpha) {
     document.getElementById('table').innerHTML = tableHtml(positions);
 }.time('showLeagueTable');
 
-let leagueTable = new LeagueTable();
-resultInputSource.addListener( results => leagueTable.resultsInput(results));
 alphaInputSource.addListener( showLeagueTable );
 
 leagueTable.addChangeListener( () => showLeagueTable(alphaInputSource.latest));

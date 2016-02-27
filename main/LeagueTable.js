@@ -3,10 +3,9 @@
 class LeagueTable {
 
     constructor() {
-        this._results = new CachedSequence();
+        this._inputs = {};
         this._listeners = [];
-
-        this._cachedJsonData = {};
+        this.jsonData = new JsonData(this._inputReceived.bind(this));
 
         _.forIn(this.buildModel(), (propFn, name) => {
             this[name] = propFn;
@@ -14,6 +13,15 @@ class LeagueTable {
     }
 
     // implementation
+    input(name) {
+        return this._inputs[name] || (this._inputs[name] = new CachedSequence());
+    }
+
+    addInputs(name, inputs) {
+        if (!this._inputs[name]) throw new Error(`Unknown input: ${name}`)
+        this._inputs[name].add(inputs);
+    }
+
     addChangeListener(listenerFn) {
         this._listeners.push(listenerFn);
         listenerFn()
@@ -40,46 +48,17 @@ class LeagueTable {
         return result;
     }
 
-    get results() { return this._results }
-    resultsInput(r) { this._results.add(r); this._inputReceived(); }
-
-    // helpers
-    getJsonData(url, propertyPath) {
-        function getValue(url, callback, errorCallback) {
-            $.getJSON(url).done(callback).fail(errorCallback);
-        }
-
-        if (this._cachedJsonData[url] === undefined) {
-            getValue( url, function(data) {
-                this._cachedJsonData[url] = data; this._inputReceived()
-            }.bind(this));
-            this._cachedJsonData[url] = {};
-        }
-
-        let self = this;
-        return {
-            get value() {
-                return _.get(self._cachedJsonData[url], propertyPath) || "";
-            }
-        };
-
-    }
-
     // model
     buildModel() {
-        let aggregate = this.aggregate;
+        let aggregate = this.aggregate, input = this.input.bind(this), jsonData = this.jsonData;
 
-        let homeTeams = this.results.map( r => r.home.team);
-        let awayTeams = this.results.map( r => r.away.team);
+        let homeTeams = input('results').map( r => r.home.team);
+        let awayTeams = input('results').map( r => r.away.team);
         let teams = homeTeams.merge(awayTeams).distinct();
 
         let manager = (teamName) => {
             let teamKey = teamName.toLowerCase().replace(/ /g, '_');
-            return this.getJsonData(`/leaguetable/main/data/teams/${teamKey}.json`, 'manager');
-        };
-
-        let teamResults = (teamName) => {
-            return this.results.filter( r => r.home.team == teamName || r.away.team == teamName);
+            return jsonData.get(`/leaguetable/main/data/teams/${teamKey}.json`, 'manager');
         };
 
         let goalsFor = (teamName, result) => teamName == result.home.team ? result.home.goals : result.away.goals;
@@ -90,18 +69,18 @@ class LeagueTable {
         let pointsFor = (teamName, result) => won(teamName, result) ? 3 : drawn(result) ? 1 : 0;
 
         let teamStats = teamName => {
-            let ourResults = teamResults(teamName);
+            let teamResults = input('results').filter( r => r.home.team == teamName || r.away.team == teamName);
             return aggregate({
                 name: teamName,
                 manager: manager(teamName),
-                games: ourResults.count(),
-                won: ourResults.filter(r => won(teamName, r)).count(),
-                drawn: ourResults.filter(r => drawn(r)).count(),
-                lost: ourResults.filter(r => lost(teamName, r)).count(),
-                goalsFor: ourResults.map(r => goalsFor(teamName, r)).sum(),
-                goalsAgainst: ourResults.map(r => goalsAgainst(teamName, r)).sum(),
-                goalDifference: ourResults.map(r => goalsFor(teamName, r) - goalsAgainst(teamName, r)).sum(),
-                points: ourResults.map(r => pointsFor(teamName, r)).sum()
+                games: teamResults.count(),
+                won: teamResults.filter(r => won(teamName, r)).count(),
+                drawn: teamResults.filter(r => drawn(r)).count(),
+                lost: teamResults.filter(r => lost(teamName, r)).count(),
+                goalsFor: teamResults.map(r => goalsFor(teamName, r)).sum(),
+                goalsAgainst: teamResults.map(r => goalsAgainst(teamName, r)).sum(),
+                goalDifference: teamResults.map(r => goalsFor(teamName, r) - goalsAgainst(teamName, r)).sum(),
+                points: teamResults.map(r => pointsFor(teamName, r)).sum()
             })
         };
 
