@@ -29,10 +29,17 @@ class LeagueTable {
         this._notifyChange();
     }
 
-    resolve(fnObj) {
-        return _.mapValues(fnObj, function(v) {
-            return _.hasIn(v, 'value') ? v.value : v;
+    aggregate(obj) {
+        let result = {};
+        _.forOwn(obj, (v, name) => {
+            if (_.hasIn(v, 'value')) {
+                Object.defineProperty(result, name, { get: function () { return v.value; } });
+            } else {
+                result[name] = v;
+            }
         });
+
+        return result;
     }
 
     get results() { return this._results }
@@ -84,7 +91,7 @@ class LeagueTable {
 
         let teamStats = _.memoize( teamName => {
             let ourResults = teamResults(teamName);
-            return {
+            return this.aggregate({
                 name: teamName,
                 manager: manager(teamName),
                 games: ourResults.count(),
@@ -95,11 +102,11 @@ class LeagueTable {
                 goalsAgainst: ourResults.map(r => goalsAgainst(teamName, r)).sum(),
                 goalDifference: ourResults.map(r => goalsFor(teamName, r) - goalsAgainst(teamName, r)).sum(),
                 points: ourResults.map(r => pointsFor(teamName, r)).sum()
-            }
+            })
         }, function(tn) { return tn });
 
         let allTeamStats = teams.map( t => teamStats(t));
-        let leaguePositions = allTeamStats.sort( t => -t.points.value );
+        let leaguePositions = allTeamStats.sort( t => -t.points );
         let teamsByName = allTeamStats.sort( t => t.name );
 
         return {leaguePositions, teamsByName};

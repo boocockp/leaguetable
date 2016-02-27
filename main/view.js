@@ -44,7 +44,7 @@ var getLeagueTable = function(sortAlpha) {
 
 let showLeagueTable = function(sortAlpha) {
     var positions = getLeagueTable(sortAlpha);
-    document.getElementById('table').innerHTML = tableHtml(positions.value);
+    document.getElementById('table').innerHTML = tableHtml(positions);
 }.time('showLeagueTable');
 
 let leagueTable = new LeagueTable();
