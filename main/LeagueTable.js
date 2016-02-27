@@ -25,6 +25,11 @@ class LeagueTable {
         this._notifyChange();
     }
 
+    resolve(fnObj) {
+        return _.mapValues(fnObj, function(v) {
+            return _.hasIn(v, 'value') ? v.value : v;
+        });
+    }
 
     get results() { return this._results }
     resultsInput(r) { this._results.add(r); this._inputReceived(); }
@@ -42,7 +47,13 @@ class LeagueTable {
             this._cachedJsonData[url] = {};
         }
 
-        return _.get(this._cachedJsonData[url], propertyPath) || "";
+        let self = this;
+        return {
+            get value() {
+                return _.get(self._cachedJsonData[url], propertyPath) || "";
+            }
+        };
+
     }
 
     // business logic
@@ -60,12 +71,7 @@ class LeagueTable {
 
     manager(teamName) {
         let teamKey = teamName.toLowerCase().replace(/ /g, '_');
-        let self = this;
-        return {
-            get value() {
-                return self.getJsonData(`/leaguetable/main/data/teams/${teamKey}.json`, 'manager');
-            }
-        };
+        return this.getJsonData(`/leaguetable/main/data/teams/${teamKey}.json`, 'manager');
     }
 
     goalsFor (teamName, result) { return teamName == result.home.team ? result.home.goals : result.away.goals; }
@@ -99,20 +105,7 @@ LeagueTable.prototype.teamStatsFn = _.memoize(function teamStats(teamName) {
 },  function(tn) { return tn } );
 
 LeagueTable.prototype.teamStats = function(teamName) {
-    let tsFn = this.teamStatsFn(teamName);
-    return {
-        name: tsFn.name,
-        manager: tsFn.manager.value,
-        games: tsFn.games.value,
-        won: tsFn.won.value,
-        drawn: tsFn.drawn.value,
-        lost: tsFn.lost.value,
-        goalsFor: tsFn.goalsFor.value,
-        goalsAgainst: tsFn.goalsAgainst.value,
-        goalDifference: tsFn.goalDifference.value,
-        points: tsFn.points.value
-    }
-
+    return this.resolve(this.teamStatsFn(teamName));
 };
 
 LeagueTable.prototype.teamResults = _.memoize(function teamResults(teamName) {
