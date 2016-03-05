@@ -22,6 +22,20 @@ Concepts
 - Client sends inputs to server to append to input stream
 - Clients are more powerful than servers - memory and spare CPU - but still worth optimising
 - If decide to do on server - will all run there on node anyway
+- Could generate html on server for static site
+
+Entities
+--------
+
+- You can still have (should have?) domain entities - they are just defined with functions, not mutable fields eg Account
+- A domain functional model can contain many instances of lower level functional models eg General Ledger FM with many Account FMs
+
+
+Use cases
+---------
+
+- Not aimed at highest performance
+- Aimed at rapid development through bringing implementation closer to mental model
 
 Environmental Factors
 ---------------------
@@ -39,11 +53,37 @@ Input Sources
 - Each output/property of a functional model is an input source for another model
 - Need a single sequence of inputs per model
 - Persist only validated inputs
+- Functional models don't need to receive inputs - they just observe changes in other input sequences
+
+Model Objects
+-------------
+- Zero or more incoming sequences
+- One or more outgoing sequences
+- Don't know whether incoming are direct inputs or from other model objects
+- Inputs are special objects with outgoing sequences that adapt outside world
+- Merging and saving multiple inputs would be responsibility of one object, separate from the model objects
+- AND are these the same things as aggregates created within a function?
+- AND can you create new instances of defined model objects within a function? SOOP!
+
+Currying
+--------
+- Good if could have automatic currying with fewer than intended args so could say:
+  let hasPostingFor = (accountId, transaction) => _.some(transaction.postings, p => p.accountId == accountId);
+  let accountTransactions = transactions.filter( hasPostingFor(accountId));
+
+
+External actions
+----------------
+
+- Observe changes, send and emit ack which is stored persistently
+- Function generating actions looks at difference between required and sent
+- Required could depend on what already sent to create a series of actions that have to be done in order
 
 Useful tools
 ------------
 
-- Immutable.js
+- Immutable.js ?
+- Lazy.js ?
 
 
 Implementation
