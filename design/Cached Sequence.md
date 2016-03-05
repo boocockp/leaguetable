@@ -45,6 +45,41 @@ NON-cached sequences
 --------------------
 
 - If you know you don't care about old values, you could not cache them, and just have an index of where you are
+- Or you could discard them and only recreate from original if needed
+- Or could just have merged operations through the iterators
+- Trade-off memory with speed - repeated traversals of underlying source
+- Maybe smart caching - thresholds for saving
+
+Observers
+---------
+- Use state before and after an input
+- Observer can track back up to input CS and observe it's before/after signals
+- May be multiple inputs
+- Has to act like replay subject - cold observable, remembers everything
+- *and* has to return current value when you subscribe to it
+- Having leaf go direct to source for changes avoids glitches
+
+Aggregators
+-----------
+
+- NOT cached sequences - only have a series of simple values
+- Can be combined with each other, not with sequences
+- One type of aggregator is latest - so can combine two CachedSequence.latest values, but not the whole sequence
+
+Why not Rx
+----------
+- Simpler
+- Have value without subscribing
+- Can load many values in one go - important for startup with initial data
+- Glitch-free
+- Want the whole input list in one go, then updates
+- *Could* see it as a stream of input lists, rather than a stream of individual items
+
+Why not Lazy.js
+---------------
+
+- Doesn't seem to be able to add to sequence after created
+- No caching to avoid repeated traversals
 
 To Do
 -----

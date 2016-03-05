@@ -18,3 +18,4 @@ Areas to explore
 - Performing actions with outputs
 - Time-based functions
 - Time-travel or 'as at' views eg league table on dates in past
+- Input validation and rejection of inputs and whether to save them
