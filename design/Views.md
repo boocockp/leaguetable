@@ -73,7 +73,41 @@ View component functional model
 
 Getting values and handling events
 ----------------------------------
-- A view component also has an eventsRequired property and a method to call with events 
+- A view component could have an eventsRequired property and a method to call with events
+- Or a function to get a sequence of events or value changes from elements
+- Could have a sequence that started with current value of an input and then produced each change
+ 
+
+Implementation
+--------------
+- Unknown elements are stripped from places they are not allowed (eg inside select), but text nodes remain
+- Text nodes can be found with jQuery contents and a node type filter
+- Table does not allow text inside the tbody - moves it to outside the table
+- Random JS idea: pass a function to a property which is evaluated each time by the getter, simulates by value expressions
+
+Web component views
+-------------------
+
+- Instead of a functional model that spits out arbitrary HTML to be rendered separately, have a web component that is a functional model
+- Can't put arbitrary bits of text in text elements or attributes, but maybe that is not a bad thing
+- The web component may observe one or more sequences
+- It fills itself with HTML when it gets a value
+- The HTML could come from a ES6 templated string
+- The HTML can use other functional web components
+- It may update its HTML rather than overwriting it if that is more efficient
+- Remove listeners on data sequences in detachedCallback
+- Element attributes can bind to data by dotted path - with or without {{}}
+- Resolve objects any way you like - by properties on element hierarchy, by window level vars, by id of objects, by tag name of objects 
+- Implementation: unclear when properties of custom element are available - don't seem to be in document ready, but they are in a script at end of body
+- Create DataSequences that automatically listen for certain events
+
+Why not Polymer
+---------------
+
+- Use Polymer?  Maybe, but it has a lot we don't need, like two-way binding
+- Heavyweight
+- Need to use templates
+- Data binding syntax very clunky
 
 
 Resolving model objects
@@ -81,3 +115,4 @@ Resolving model objects
 
 - Need to decide where to convert sequences to latest values to use in views
 - Probably as late as possible - maybe in observer that triggers view
+

@@ -36,6 +36,7 @@ Use cases
 
 - Not aimed at highest performance
 - Aimed at rapid development through bringing implementation closer to mental model
+- Offline first - sync just by adding new events to list, optionally using time in client clock
 
 Environmental Factors
 ---------------------
@@ -70,6 +71,11 @@ Currying
 - Good if could have automatic currying with fewer than intended args so could say:
   let hasPostingFor = (accountId, transaction) => _.some(transaction.postings, p => p.accountId == accountId);
   let accountTransactions = transactions.filter( hasPostingFor(accountId));
+
+Functional Model properties
+---------------------------
+- Want the actual value to use as the proerty value - what people expect
+- Also want the change stream as input to other things  - maybe <prop>Changes naming convention, or changeStream(<name>)
 
 
 External actions
