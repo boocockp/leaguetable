@@ -23,12 +23,14 @@ Concepts
 - Clients are more powerful than servers - memory and spare CPU - but still worth optimising
 - If decide to do on server - will all run there on node anyway
 - Could generate html on server for static site
+- Avoid explicit reduce actions
 
 Entities
 --------
 
 - You can still have (should have?) domain entities - they are just defined with functions, not mutable fields eg Account
 - A domain functional model can contain many instances of lower level functional models eg General Ledger FM with many Account FMs
+- No explicit repositories and updates
 
 
 Use cases
@@ -64,12 +66,25 @@ Model Objects
 - Merging and saving multiple inputs would be responsibility of one object, separate from the model objects
 - AND are these the same things as aggregates created within a function?
 - AND can you create new instances of defined model objects within a function? SOOP!
+- Model objects may create new model objects
 
 Currying
 --------
 - Good if could have automatic currying with fewer than intended args so could say:
   let hasPostingFor = (accountId, transaction) => _.some(transaction.postings, p => p.accountId == accountId);
   let accountTransactions = transactions.filter( hasPostingFor(accountId));
+
+Functional Model properties
+---------------------------
+- Want the actual value to use as the property value - what people expect
+- Also want the change stream as input to other things  - maybe <prop>Changes naming convention, or changeStream(<name>)
+
+Proxy for sequence
+------------------
+- Can attach a proxy to a sequence to make it look like a normal object
+- Gives out the properties of the latest value in the sequence
+- Also has onChange method to observe changes
+- Has changes property to get the underlying sequence, maybe to use in more transformations
 
 
 External actions
@@ -79,6 +94,90 @@ External actions
 - Function generating actions looks at difference between required and sent
 - Required could depend on what already sent to create a series of actions that have to be done in order
 
+Testing
+-------
+
+- Many tests direct to central business model
+- Record input streams from page elements for recording tests
+- Detect output stream changes
+- Detect page changes by comparing before and after
+- Use for live how to guides as well
+- Mark up all elements with the property they represent so page-scraping is automatic
+- Any HTML page can have structured data extracted from it without further definition
+- Tests need to be sequences of specifiers for inputs and actions and expected outputs, so can be run slowly and described as they go
+- If acting in one page and checking effect in another, have both open in side-by-side frames
+- Pages inherently testable
+
+Views
+-----
+- Multiple instances of view - so can have two copies of app view open in one window, and see side by side - esp good for demo
+- What is model, what is view - not fixed - you decide
+- Controllers: not relevant
+
+
+Authorisation levels
+--------------------
+- Different views to each user
+- Different data items to each user
+- Can you filter at event level, so can still download all data to client and let views happen there?
+- May need to adjust views on client so they only include the items available
+- Have a definition of what available for each client - use to filter when downloading and also control views
+- Aim for being able to have property-level control for each user
+- Projections and selections of data for each user
+- Include only fields specifically allowed to see
+- Web views only show UI control if that item key is in the data
+ 
+Persistence
+-----------
+- Offline first - if can save to and update from a remote store that is a bonus
+- Simple - single user - assume always online - just update when start and save after every change
+- Unlike local storage, data requested from remote store will not be available synchronously - will arrive later
+- An input store is just a Cached Sequence, and may have data added to it at any point
+
+Synchronisation
+---------------
+- Updates to input store may not be at end of sequence, and will require full recalculation
+- Need mechanism to force invalidation/recalculation all down the tree
+- Would also work for cached sequences where values not always appended eg a sort or filter
+- Possible: full recalc flag to be checked alongside version
+- May be able to optimize by giving index of first inserted element, so recalc from there?
+
+APIs
+----
+- Run views on server to give traditional REST API
+- Accept PUT/POST into input sequence through usual validation for updates
+
+Caching and databases
+---------------------
+- Could materialise certain views into database records
+- See database as just a cache
+- Events are still the source of truth
+- Database can be reconstructed from events at any time
+- Data migration is just a rebuild from scratch with new business logic
+
+All data on client
+------------------
+- Simplest, but not only way
+- Virtual sequences that request certain inputs according to a condition when necessary
+- Could even just send the condition to the server as JS
+- Serialize a whole chain of functional sequences, send to server to reconstruct and execute there
+- If server could cache chains or *parts* of chains, even better
+- Don't change the definition, just where it is executed
+
+Validation
+----------
+- Don't have sync call to know which errors are result of an action
+- Can use correlation id to link actions to the errors they produce
+- Would also work if validation done remotely
+- Include a client id to ensure errors only sent to the right client
+
+Server validation
+-----------------
+- *Must* have some code on server to ensure correct validation of inputs before applied to core set - security and consistency
+- Do you persist raw inputs or after validation?
+- What happens if change some validation rules so that old inputs are no longer valid or invalid? 
+
+
 Useful tools
 ------------
 
@@ -86,8 +185,8 @@ Useful tools
 - Lazy.js ?
 
 
-Implementation
---------------
+Reactive Updates
+----------------
 
 - There are two ways of doing this: push new values down, or pull from bottom, cache and invalidate
 - Define functions like unique and groupBy so they return same object if a new value doesn't change them, so don't need to recalculate downstream if memoized
@@ -98,6 +197,8 @@ Implementation
 - With async results and versioning may do recalculation of everything after each aync result received
 - Updates to functions: just replace whole model and replay the results
 - Build a model as a network of cached sequences in a single function, expose some or all properties for value and notifications
+- Avoid updates to views while they are not shown or are collapsed
+- Avoid refreshing the whole page
 
 Asynchronous functions
 ----------------------
@@ -108,5 +209,9 @@ Questions
 ---------
 - Should functional model objects own their input sequences, or just be given refs to them? 
   - Prob just a ref, as may have different impls and may want diff models against same inputs
+  
+Spreading the word
+------------------
+- A very short Todo MVC might get it noticed (not really MVC, though)
   
   

@@ -58,6 +58,12 @@ Observers
 - Has to act like replay subject - cold observable, remembers everything
 - *and* has to return current value when you subscribe to it
 - Having leaf go direct to source for changes avoids glitches
+- With filter and many observers, could optimise by only calling those observers that need to know - maybe filter terminates the observe chain
+
+Events
+------
+- Need to take account of distinct events - if more values in output list, there are more events
+- May need to highlight what has changed, down to cell level, after an input
 
 Aggregators
 -----------
@@ -65,6 +71,31 @@ Aggregators
 - NOT cached sequences - only have a series of simple values
 - Can be combined with each other, not with sequences
 - One type of aggregator is latest - so can combine two CachedSequence.latest values, but not the whole sequence
+
+Getting updates for one item in a collection
+--------------------------------------------
+- Need to pick one entity from a collection by id and get a DataSequence of changes to that entity
+
+Fine grained updates
+--------------------
+- Really depends on what want to do with it, so maybe need to depend on every stream you take, not just outer structure stream eg each account balance, not just list
+- Maybe anywhere you take a value, you need to observe changes
+- *So* maybe you never take a value except in an onChange handler
+- For a table, could either
+  - add every value to a list to be listened for, then regenerate all HTML if need to
+  - have data display custom components that are attached to a data sequence
+
+
+Optimisation
+------------
+- Streams with selection smarts eg index on an id
+- Streams based on db tables
+- Caches of entity SOOs
+- Timestamp of cache, timestamp of events, so know which ones to apply
+- Still need plain maps as well as SOOs
+- Two sorts of system: big hierarchical database objects, web page with interacting components and known named singletons
+
+
 
 Why not Rx
 ----------
@@ -83,3 +114,19 @@ Why not Lazy.js
 
 To Do
 -----
+
+
+Thoughts
+--------
+- Property change - send old and new to use in accumulator streams
+- Hierarchical state is just the output of many functions
+- Async is built in
+- Customer.orders = orders where custId == this.id; just like a query
+- Lazy built in
+- All SOOs self contained - have to feed streams into them
+- Issue: how to make remote views of server objects behave like live SOOs, efficiently
+- Input objects - must be plain objects
+- Objects with stream members vs objects with value members
+- Auto wrap objects when need to use them
+- Bridge between conventional objects that notify property changes, and SOOs
+- If have stream, use it, else wrap in stream when needed
