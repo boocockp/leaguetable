@@ -50,6 +50,18 @@ NON-cached sequences
 - Trade-off memory with speed - repeated traversals of underlying source
 - Maybe smart caching - thresholds for saving
 
+Cached vs non-cached
+--------------------
+- Is there a clash?
+- What meaning do add, value, transform and aggregation operations have?
+- Dual purpose sequences possible
+
+Other types of Cached sequence
+------------------------------
+- As well as array cache, could have:
+  - map of id to separate array sequences
+  - map of id to separate reduced data sequences
+
 Observers
 ---------
 - Use state before and after an input
@@ -104,7 +116,9 @@ Why not Rx
 - Can load many values in one go - important for startup with initial data
 - Glitch-free
 - Want the whole input list in one go, then updates
+- Need to be able to insert elements before end of cached sequences and then recalculate to allow for merged updates
 - *Could* see it as a stream of input lists, rather than a stream of individual items
+- Aggregates are updated as you go, not just at the end
 
 Why not Lazy.js
 ---------------

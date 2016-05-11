@@ -107,6 +107,7 @@ Testing
 - Tests need to be sequences of specifiers for inputs and actions and expected outputs, so can be run slowly and described as they go
 - If acting in one page and checking effect in another, have both open in side-by-side frames
 - Pages inherently testable
+- *** Clients should sync data, so if test is another client, just has its own copy and checks that
 
 Views
 -----
@@ -204,6 +205,12 @@ Asynchronous functions
 ----------------------
 - Need care on when to trigger inputReceived, as if do it directly in callback can cause a loop
 - Need to know the call is in progress so don't do it again
+
+Concentration of events
+-----------------------
+- Eg individual form-field entries into submitted input
+- Maybe updates to entity into current state
+- Have to decide when old events no longer of interest, just keep their final result
 
 Questions
 ---------

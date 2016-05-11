@@ -29,3 +29,9 @@ Use in functional model
 Async updates
 -------------
 - If a retrieved value can update, cache it and force re-evaluation
+
+Promises vs Sequences
+---------------------
+
+- Sometimes an async input is initiated by the receiver eg uploaded object control getting file from file store
+- In this case returning a Promise is clearer than async data flows with correlation ids
