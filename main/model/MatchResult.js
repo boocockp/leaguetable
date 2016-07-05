@@ -2,6 +2,9 @@ const MatchResult = /*memoizeProps*/(class MatchResult {
     constructor(homeTeam, homeGoals, awayTeam, awayGoals) {
         this.home = {teamName: homeTeam, goals: homeGoals};
         this.away = {teamName: awayTeam, goals: awayGoals};
+        // this.homeWin = homeGoals > awayGoals;
+        // this.awayWin = homeGoals < awayGoals;
+        // this.draw = !this.homeWin && !this.awayWin;
     }
     
     get homeWin() {

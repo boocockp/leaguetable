@@ -24,4 +24,6 @@ Ideas
 - Memoizing easier on functional objects, as most functions are no-args properties
 - Maybe functions with args have to be functional objects, so can be memoized - eg BalanceSheet
 - Memoizing getters with complex calcs (LeagueTable, Team) gets cold performance close to cached sequences
+- Incremental additions still same as cold for memoized, but much quicker for cached sequence
 - Memoizing simple getters (MatchResult, TeamResult) is actually slower by 50% - 100%
+- Calculating TeamResult and MatchResult props in constructor and storing made no measurable difference - presumably only called once anyway
