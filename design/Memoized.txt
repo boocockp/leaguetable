@@ -1,0 +1,25 @@
+Memoized
+========
+
+Non-memoized new LeagueTable vs Cached Sequence
+-----------------------------------------------
+
+Results     Cached Seq cold     Cached Seq warm     Plain Function cold     Plain function warm
+
+10k         85                  4                   450                     450
+100k        900                 2                   7981                    7300
+
+LeagueTable with classes LeagueTable and Team memoized
+------------------------------------------------------
+
+Results     Cold        Warm
+10k         115         3
+100k        1350        3
+
+
+Ideas
+-----
+- Speed up recalc by indexing inputs
+- General purpose watcher on any value linked to input notifications
+- Memoizing easier on functional objects, as most functions are no-args properties
+- Maybe functions with args have to be functional objects, so can be memoized - eg BalanceSheet

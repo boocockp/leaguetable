@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>League Table Calculator (new)</title>
+    <style>
+        body {
+            font-family: Arial,Helvetica,sans-serif;
+        }
+
+        h2 {
+            margin-left: 60px;
+        }
+        div.frame {
+            /*width: 30%;*/
+            height: 300px;
+            padding: 0 30px;
+            margin: 0 60px 0 30px;
+            /*border: 2px solid lightslategray;*/
+            float: left;
+        }
+
+        div#table table {
+            border: 1px solid gray;
+            border-collapse: collapse;
+        }
+        div#table table th, div#table table td {
+            border: 1px solid gray;
+            padding: 5px;
+            min-width: 5em;
+        }
+    </style>
+</head>
+<body>
+
+<h2>League Table Calculator (new)</h2>
+<div id="input" class="frame">
+    <h3>Match Results</h3>
+    <textarea id="resultInput" cols="50" rows="15" placeholder="Home Team, Home Goals, Away Team, Away Goals"></textarea>
+    <p><button id="enter">Enter</button></p>
+    <p><label>Sort by name<input id="alpha" type="checkbox"></label></p>
+</div>
+
+
+<div id="output" class="frame">
+    <h3>League Table</h3>
+    <div id="table"></div>
+</div>
+
+<script src="lib/lodash.js"></script>
+<script src="lib/jquery-2.2.1.js"></script>
+<script src="utils.js"></script>
+
+<script src="CachedSequence.js"></script>
+<script src="InputSource.js"></script>
+<script src="LocalStorageInputSource.js"></script>
+<script src="model/MatchResult.js"></script>
+<script src="model/TeamResult.js"></script>
+<script src="model/Team.js"></script>
+<script src="model/LeagueTable.js"></script>
+<script src="input.js"> </script>
+<script src="view.js"> </script>
+
+</body>
+</html>
