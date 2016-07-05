@@ -108,6 +108,10 @@ Testing
 - If acting in one page and checking effect in another, have both open in side-by-side frames
 - Pages inherently testable
 - *** Clients should sync data, so if test is another client, just has its own copy and checks that
+- Tests run in browser - fast, debugging easy, run in all browsers
+- Could use Electron to run tests from command line if needed, but not to drive tests - unnecessary layer
+- BUT there are some things you can't do from inside browser, like full screen
+
 
 Views
 -----
@@ -143,6 +147,12 @@ Synchronisation
 - Possible: full recalc flag to be checked alongside version
 - May be able to optimize by giving index of first inserted element, so recalc from there?
 
+Client storage
+--------------
+- May be able to have immutable data files which are made cacheable for ever so they stay in browser cache
+- Maybe 1Mb chunks
+- Supplement with latest events
+
 APIs
 ----
 - Run views on server to give traditional REST API
@@ -165,18 +175,53 @@ All data on client
 - If server could cache chains or *parts* of chains, even better
 - Don't change the definition, just where it is executed
 
+Client app
+----------
+- Use Electron to have a proper desktop app
+- Unlimited data storage 
+
 Validation
 ----------
 - Don't have sync call to know which errors are result of an action
 - Can use correlation id to link actions to the errors they produce
 - Would also work if validation done remotely
 - Include a client id to ensure errors only sent to the right client
+- If have entity id, regard as updates, validate only what sent
+- If no entity id, all required fields must be present
+- Cross-field validation will require input from existing
 
 Server validation
 -----------------
 - *Must* have some code on server to ensure correct validation of inputs before applied to core set - security and consistency
 - Do you persist raw inputs or after validation?
 - What happens if change some validation rules so that old inputs are no longer valid or invalid? 
+
+Login and identity
+------------------
+- Login with Google account to get Cognito identity
+- Admin uses server app to generate one-time random phrase or password 
+- User sends while logged in along with name and email from Google profile
+- If one-time password recognised, associate profile details with Cognito identity and add password to used list
+
+Set up environments in code
+---------------------------
+- The project code sets up a working app environment, including all cloud services
+- Can deploy any number of versions
+- Immutable environments
+- Can copy production data to any environment - or just test data
+- Can have a second copy of prod environment for troubleshooting
+- Can run all tests on top of production data
+- Can smoke test existing production data on copy
+- Can make env live and roll back just by switching DNS
+- Need to support local dev with AWS in background
+- Store commit and version in config
+- Need to rollback with correct script - store it in the deployment?
+- Define resource objects as vars, connected to stack
+- Need to create, refresh, create with check not there, delete
+- Do any of the actions with each resource
+- Resources refer to each other just as variables
+- Stack has some overall params like app root name? Or just top-level vars
+- Useful if could store stack as JSON?   Hard if cross-references - use reference/id replacement
 
 
 Useful tools
@@ -200,6 +245,8 @@ Reactive Updates
 - Build a model as a network of cached sequences in a single function, expose some or all properties for value and notifications
 - Avoid updates to views while they are not shown or are collapsed
 - Avoid refreshing the whole page
+
+
 
 Asynchronous functions
 ----------------------

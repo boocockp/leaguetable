@@ -108,6 +108,15 @@ Web component views
 - Implementation: unclear when properties of custom element are available - don't seem to be in document ready, but they are in a script at end of body
 - Create DataSequences that automatically listen for certain events
 
+Update granularity
+------------------
+- Consider how updates work to an object that has simple properties and also derived views - like account with balance and transactions
+- May just get sequence of account versions, and redo all of it
+- Or account may contain multiple sequences - the info details are one update block, and the transaction list another
+- Poss: Entity instances are static, but contain sequences for parts of themselves
+- Attach a component to one of the sequences, to be fully redrawn when it changes
+
+
 Why not Polymer
 ---------------
 

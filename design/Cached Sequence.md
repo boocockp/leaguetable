@@ -62,6 +62,11 @@ Other types of Cached sequence
   - map of id to separate array sequences
   - map of id to separate reduced data sequences
 
+Other implementations
+---------------------
+- Transforms are implemented to produce a database query that gives you the desired result
+- Client may turn chain of sequence transforms into a spec that is sent to server and creates websocket stream
+
 Observers
 ---------
 - Use state before and after an input
@@ -97,10 +102,10 @@ Fine grained updates
   - add every value to a list to be listened for, then regenerate all HTML if need to
   - have data display custom components that are attached to a data sequence
 
-
 Optimisation
 ------------
 - Streams with selection smarts eg index on an id
+- Sequences that look at find query functions and index themselves automatically on the results of that function
 - Streams based on db tables
 - Caches of entity SOOs
 - Timestamp of cache, timestamp of events, so know which ones to apply
