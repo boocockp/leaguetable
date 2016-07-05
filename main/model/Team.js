@@ -5,7 +5,7 @@ const Team = memoizeProps(class Team {
     }
 
     get results() {
-        return this.leagueTable.matchResults.filter( r => r.involved(this) ).map( r => new TeamResult(this, r) );
+        return this.leagueTable.resultsByTeam[this.name].map( r => new TeamResult(this, r) );
     }
 
     get games() {

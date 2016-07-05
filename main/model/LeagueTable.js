@@ -14,6 +14,16 @@ const LeagueTable = memoizeProps(class LeagueTable {
         return _.sortBy(this.teams, 'name');
     }
 
+    get resultsByTeam() {
+        const resultsByHome = _.groupBy(this.matchResults, r => r.home.teamName );
+        const resultsByAway = _.groupBy(this.matchResults, r => r.away.teamName );
+        function joinArrays(a, b) {
+            return a.concat(b);
+        }
+
+        return _.mergeWith(resultsByHome, resultsByAway, joinArrays)
+    }
+
     resultsInput(r) {
         const newResults = r.map( it => new MatchResult(it.home.team, it.home.goals, it.away.team, it.away.goals));
         this._addNewTeams(newResults);

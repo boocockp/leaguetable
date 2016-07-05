@@ -13,8 +13,16 @@ LeagueTable with classes LeagueTable and Team memoized
 ------------------------------------------------------
 
 Results     Cold        Warm
-10k         115         3
+10k         120         3
 100k        1350        3
+
+
+LeagueTable with results mapped by team
+---------------------------------------
+
+Results     Cold        Warm
+10k         90          3
+100k        850         3
 
 
 Ideas
@@ -27,3 +35,5 @@ Ideas
 - Incremental additions still same as cold for memoized, but much quicker for cached sequence
 - Memoizing simple getters (MatchResult, TeamResult) is actually slower by 50% - 100%
 - Calculating TeamResult and MatchResult props in constructor and storing made no measurable difference - presumably only called once anyway
+- Grouping an into a map that can be memoized is both clear to use and better performance
+- If can memoize a property returning a map, effectively like memoizing a function
