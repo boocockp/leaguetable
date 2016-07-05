@@ -23,3 +23,5 @@ Ideas
 - General purpose watcher on any value linked to input notifications
 - Memoizing easier on functional objects, as most functions are no-args properties
 - Maybe functions with args have to be functional objects, so can be memoized - eg BalanceSheet
+- Memoizing getters with complex calcs (LeagueTable, Team) gets cold performance close to cached sequences
+- Memoizing simple getters (MatchResult, TeamResult) is actually slower by 50% - 100%

@@ -24,21 +24,21 @@ function memoizeProps(clazz) {
 
     function memoizedGetter (propName) {
         const getFn = propDesc(propName).get;
-        return function memoGetter() {
+        const memoGetter = function () {
             if (!this.propertyCache.has(propName)) {
                 this.propertyCache.set(propName, getFn.apply(this));
             }
 
             return this.propertyCache.get(propName);
-        }
-    }
+        } ;
 
-    if (!propDesc('propertyCacheController')) {
-        throw new Error(`Cannot memoize class ${clazz.name} as it does not define a 'propertyCacheController' property`);
+        // Object.defineProperty(memoGetter, 'name', {value: `${propName}_memoized`});   //TODO make this work
+
+        return memoGetter;
     }
 
     const calculatedPropNames = Object.getOwnPropertyNames(clazz.prototype)
-        .filter( n => n != 'propertyCacheController' && propDesc(n).get && !propDesc(n).set);
+        .filter( n => propDesc(n).get && !propDesc(n).set);
     console.log( clazz.name, 'calculatedProps', calculatedPropNames);
     calculatedPropNames.forEach( name => {
         Object.defineProperty(clazz.prototype, name, {get: memoizedGetter(name) });
@@ -47,9 +47,9 @@ function memoizeProps(clazz) {
     Object.defineProperty(clazz.prototype, 'propertyCache', {
         get: function () {
             this._propertyCache || (this._propertyCache = new Map());
-            if (this._cacheVersion != this.propertyCacheController.version) {
+            if (this._cacheVersion != PropertyCacheController.version) {
                 this._propertyCache.clear();
-                this._cacheVersion = this.propertyCacheController.version
+                this._cacheVersion = PropertyCacheController.version
             }
 
             return this._propertyCache

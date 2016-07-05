@@ -32,6 +32,4 @@ const TeamResult = /*memoizeProps*/(class TeamResult {
         return this.won ? 3 : this.lost ? 0 : 1;
     }
 
-    get propertyCacheController() { return this.team.leagueTable; }
-
 });

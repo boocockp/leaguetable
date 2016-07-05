@@ -40,6 +40,4 @@ const Team = memoizeProps(class Team {
         return _.sum(this.results.map( it => it.points ));
     }
 
-    get propertyCacheController() { return this.leagueTable; }
-
 });

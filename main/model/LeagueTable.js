@@ -4,7 +4,6 @@ const LeagueTable = memoizeProps(class LeagueTable {
         this.teams = [];
         this.matchResults = [];
         this._listeners = [];
-        this.version = 0;
     }
 
     get leaguePositions() {
@@ -19,7 +18,7 @@ const LeagueTable = memoizeProps(class LeagueTable {
         const newResults = r.map( it => new MatchResult(it.home.team, it.home.goals, it.away.team, it.away.goals));
         this._addNewTeams(newResults);
         this.matchResults = this.matchResults.concat(newResults);
-        this.version++;
+        PropertyCacheController.version++;
         this._notifyChange(); 
     }
 
@@ -38,6 +37,4 @@ const LeagueTable = memoizeProps(class LeagueTable {
         existingTeamNames.forEach( it => teamNames.delete(it) );
         teamNames.forEach( n => this.teams.push(new Team(this, n)) );
     }
-
-    get propertyCacheController() { return this; }
 });
