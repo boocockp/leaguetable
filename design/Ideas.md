@@ -153,6 +153,15 @@ Client storage
 - Maybe 1Mb chunks
 - Supplement with latest events
 
+JSON storage and info
+---------------------
+- Need to store types to recreate class
+- Restore into correct class
+- Some types like enums may store only the name and type
+- Date strings need to be restored as dates
+- Enums need to be restored to the instances, not one like it
+- For info may send different data eg just name for enums
+
 APIs
 ----
 - Run views on server to give traditional REST API

@@ -5,6 +5,13 @@ LSD Writing Subjects
 - Receiving email with aws - ducks in a row, validates when set up, how to test non-receipt, error metrics, reason for not working - not active
 - Lambda functions - structuring code, esp if shared with client.  AWS SDK auth needed is different.  Include local modules.  install from npm in each dir
 - Using same code in node and browser: require and module in npm vs browser, es6 in browser vs es5 on AWS
+- Functional modelling
+- Tracking vs recalculation
+- Updates, sync'ing copies of functional model app
+- Saving and restoring app models
+- Auto REST API
+- JSON serialization and enums
+- Data flow wiring
 
 Points
 ------

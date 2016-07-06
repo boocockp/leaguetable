@@ -22,3 +22,21 @@ Validation
 - Good if metadata can describe validation rules too
 - Other entity instances may have their validation rules broken by a change in one eg account balance when a transaction added
 
+Functional OO
+-------------
+- Have all classes you would normally expect to find
+- Only updates allowed are CUD ops
+- Entities may contain collections of others OR may have derived collections
+- They have properties defined by functions, whose values may change as data is added elsewhere
+
+Top-level app
+-------------
+- Seems useful to have top-level app that all entities can use - alternative is to inject everywhere
+- Singleton instance that can be reset for testing
+- Source of inputs linked to top-level app
+
+Updates and tracking
+--------------------
+- Instead of single source of inputs, could have normal methods that generate instructions for updates
+- Instructions for updates can be applied to other apps to sync them
+- This is a separate concern to functional modelling

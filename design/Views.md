@@ -84,6 +84,25 @@ Input views
 - In the view FM, may need mappings and expressions to translate UI gestures into output stream
 - Concept of levels and layers in FMs
 
+Connecting view objects to app object
+-------------------------------------
+- Or to other view objects
+- Idea of objects emitting data, and other objects accepting it - fits with standard observer pattern
+- Views observe model
+- Model observes views to get inputs
+- Better if neither knows about the other - independent components
+- Page can act as a glue or link layer
+- Web or model components just have functions that accept data
+- If just one data value into single arg, they can be setters - good idea?
+- Something needs to set up a watcher on source to detect changes and call the setter/input function on the other component
+- May want to link app objects together as well - to reuse business logic components
+- Wiring means wiring - components don't know what is at other end
+- In code, have a link function or send(x, name).to(y, name) - can use func or setter
+- Objects could have an observer wrapper that has properties that are observer helpers
+- An observer helper can take object and prop name, or object.function and call it - so have refactorable sourceObj.obs.foo.sendTo(targetObj.inputFn)
+- In HTML, target object attribute has an expression in {{}} that defines what its source is - up to container to find and wire it up
+
+
 
 Implementation
 --------------
@@ -102,6 +121,8 @@ Web component views
 - The HTML could come from a ES6 templated string
 - The HTML can use other functional web components
 - It may update its HTML rather than overwriting it if that is more efficient
+- A view component is just one that renders something - model components may only render themselves for debugging
+- Maybe all components are written as plain, and optionally wrapped into web components - then can use server side or client side
 - Remove listeners on data sequences in detachedCallback
 - Element attributes can bind to data by dotted path - with or without {{}}
 - Resolve objects any way you like - by properties on element hierarchy, by window level vars, by id of objects, by tag name of objects 
