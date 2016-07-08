@@ -132,13 +132,6 @@ Authorisation levels
 - Include only fields specifically allowed to see
 - Web views only show UI control if that item key is in the data
  
-Persistence
------------
-- Offline first - if can save to and update from a remote store that is a bonus
-- Simple - single user - assume always online - just update when start and save after every change
-- Unlike local storage, data requested from remote store will not be available synchronously - will arrive later
-- An input store is just a Cached Sequence, and may have data added to it at any point
-
 Synchronisation
 ---------------
 - Updates to input store may not be at end of sequence, and will require full recalculation
@@ -153,18 +146,10 @@ Client storage
 - Maybe 1Mb chunks
 - Supplement with latest events
 
-JSON storage and info
----------------------
-- Need to store types to recreate class
-- Restore into correct class
-- Some types like enums may store only the name and type
-- Date strings need to be restored as dates
-- Enums need to be restored to the instances, not one like it
-- For info may send different data eg just name for enums
-
 APIs
 ----
-- Run views on server to give traditional REST API
+- Run core model app on server to give traditional REST API
+- Need mapping for rest to app methods/properties
 - Accept PUT/POST into input sequence through usual validation for updates
 
 Caching and databases
@@ -174,6 +159,12 @@ Caching and databases
 - Events are still the source of truth
 - Database can be reconstructed from events at any time
 - Data migration is just a rebuild from scratch with new business logic
+
+Mutable model alternative
+-------------------------
+- Would be possible to have a higher-performance app where updates modified calculated parts of the model directly eg account balance
+- Trade off purity for speed
+- Pros and cons?
 
 All data on client
 ------------------

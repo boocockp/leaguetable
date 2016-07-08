@@ -41,6 +41,8 @@ Ideas
 - Grouping an array into a map that can be memoized is both clear to use and better performance
 - If can memoize a property returning a map, effectively like memoizing a function
 - If a getter returns a function with args, works exactly like the function.  Is that useful?
+- Memoizing is linked to observing changes - cache invalidation occurs at same time as a potential change
+- May want to memoize even simple data properties so can observe changes
 - Could auto-generate onChange watchers for properties
 - Prefer creating view objects with parameters rather than calling functions, eg AccountAsAtView because:
   - easier to memoize

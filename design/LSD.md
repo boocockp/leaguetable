@@ -14,8 +14,10 @@ Main points
 - Reactive web components
 - Data flows
 - Wiring components like circuits
+- Libraries to use as tools OK but not frameworks
+- Motherboard/template components for particular UI styles with any entity
 
-- Client side processing from raw events
+- Client side processing from raw events (maybe)
 - Simple storage
 - Tests run in browser
 - Tests use model where possible
@@ -24,7 +26,7 @@ Main points
 - Apps with built-in tests
 - Run tests on copy of production data to ensure a new version works with existing data
 - No separate CI - just deploy and run built-in tests - record results in app?
-- No builds
+- Simple builds, avoid build tools
 - Deploy = copy files if poss
 - Serverless deployment
 - App sets up AWS/other services 
@@ -64,7 +66,7 @@ Other points
 Unique bits
 -----------
 
-- Function over all inputs, rather than applying changes to objects
+- Function over all inputs, rather than applying changes to objects - modified now
 
 Advantages
 ----------

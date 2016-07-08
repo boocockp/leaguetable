@@ -12,6 +12,7 @@ LSD Writing Subjects
 - Auto REST API
 - JSON serialization and enums
 - Data flow wiring
+- Tutorial on creating Accounts spike - no frameworks
 
 Points
 ------

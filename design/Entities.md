@@ -28,6 +28,9 @@ Functional OO
 - Only updates allowed are CUD ops
 - Entities may contain collections of others OR may have derived collections
 - They have properties defined by functions, whose values may change as data is added elsewhere
+- !!All entities must have only read-only properties so can be passed around without buggy components trying to update them
+- Property values changed by update operations
+
 
 Top-level app
 -------------
@@ -35,8 +38,9 @@ Top-level app
 - Singleton instance that can be reset for testing
 - Source of inputs linked to top-level app
 
-Updates and tracking
---------------------
-- Instead of single source of inputs, could have normal methods that generate instructions for updates
-- Instructions for updates can be applied to other apps to sync them
-- This is a separate concern to functional modelling
+Observing changes
+-----------------
+- See also file Cached Sequence.md
+- If observing an entity value, will only change if the actual entity object on that property changes
+- Changes to entity properties are observed by observers on those specific properties
+- Need a way to get observers anywhere in the code without having to pass app instance around
