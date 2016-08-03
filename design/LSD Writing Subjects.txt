@@ -11,7 +11,8 @@ LSD Writing Subjects
 - Saving and restoring app models
 - Auto REST API
 - JSON serialization and enums
-- Data flow wiring
+- Data flow wiring - with send().to() - nice and self-contained
+- Design and implementation of S3 distributed store - 2 parts
 - Tutorial on creating Accounts spike - no frameworks
 
 Points

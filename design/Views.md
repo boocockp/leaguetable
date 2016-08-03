@@ -208,6 +208,12 @@ View app, navigation, routing
 - View app displays routing items in a menu and when clicked, adds history item with path
 - When location changed, finds component with longest path and displays its component, passing in rest of path
 - Could have favourites widget added if want to
+- Idea of self-routing comnponents - each component in a container handles a route segment, gets rest of path and decides how to use it
+- Could have override routes if necessary
+- Should view state be part of main redux state? Prob better if components self-contained - devolve control to appropriate level
+- Routing should *not* destroy a component when move away
+- Important to be able to move to a different part of app, change something, go back and see effect
+- Tab control not suitable as have levels of navigation
 
 List-entity view
 ----------------
@@ -242,6 +248,28 @@ Report view
 - Could memoize on the param values
 - So report view has to call method on app direct when form submitted, and use return value to update its output object
 - This also fits better with other UI models, such as getting parameters and then moving to view
+
+List editing view
+-----------------
+- Show existing elements
+- Table will do for many cases
+- Options to add element, move element, delete element
+- Option to edit existing element
+- Some fields may be editable, others not
+- May want list views with open/close and form view editing
+- May want edit in separate view - like entity list view then
+- Each change creates a new immutable list
+- Change goes via onChange to form above
+
+Validation and errors
+---------------------
+- Need to send errors to page and show them
+- What do you do with the entity? - prob best not to update it
+- Where do you define the validation rules - easiest to build into entity
+- Consider what happens if entities become invalid due to conflicting updates
+- Poss: clone entity and display all the updated calculated values and the errors from it, then send updates when ready
+- App can also clone entity and apply updates to check, but throw exception with errors if found
+- API calls to app would send back errors from excp 
 
 Update granularity
 ------------------

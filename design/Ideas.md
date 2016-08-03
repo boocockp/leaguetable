@@ -39,6 +39,18 @@ Use cases
 - Not aimed at highest performance
 - Aimed at rapid development through bringing implementation closer to mental model
 
+E-commerce sites
+----------------------
+- Nearly always some data to hold - browsing history, order history
+- In case of design your own, even more data to keep
+- But all well within local storage limits if images separate
+- Data per user, but shared across devices
+- Maybe a use for unauthorized Cognito?
+- Sign-in with FB and others would be good
+- Paid orders would go through Lambda, and be stored in separate bucket accessed only by server app
+- Separate client and server apps in this case, maybe some shared code
+
+
 Environmental Factors
 ---------------------
 
@@ -267,5 +279,9 @@ Questions
 Spreading the word
 ------------------
 - A very short Todo MVC might get it noticed (not really MVC, though)
+
+App deployment service
+----------------------
+- Might be some use for an app deployment service - like Heroku for apps written in LSD style, without full end-user SpreadTree facilities
   
   
