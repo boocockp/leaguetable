@@ -31,12 +31,35 @@ Functional OO
 - !!All entities must have only read-only properties so can be passed around without buggy components trying to update them
 - Property values changed by update operations
 
+Immutable objects
+-----------------
+- Good to have immutable entities, collections and top-level app
+- BUT seems right that should always give same result for every computed property eg account balance
+- SO if any dependent entity changes, entity using it needs to change
+
 
 Top-level app
 -------------
 - Seems useful to have top-level app that all entities can use - alternative is to inject everywhere
+- Needed for calculated functions like account balance, validation like unique code and entity reference display and picking
 - Singleton instance that can be reset for testing
 - Source of inputs linked to top-level app
+- Harder with immutable top-level app where instance keeps changing
+- If entities contain direct ref, would all change when create new top-level app
+- Poss: global variable - not good
+- Poss: provider module that can get and set app 
+
+Top-level app reconsidered
+--------------------------
+- Is this the right approach?
+- Should an entity change if anything it depends on changes?  Or is that dealt with by memoization?
+- What about big functions like reports?
+- Is this closely tied with memoization?
+- What will make a balance change reactively on the page when a new transaction is added elsewhere?
+- Is there another approach like immutable function objects that are part of entities? eg postings to an account
+- If accept that an entity should change if anything it depends on changes, and depends on whole app, then need updated entity every time app changes
+- Could do this and then use memoization to say whether actually changed, but is there a cleaner way?
+
 
 Observing changes
 -----------------

@@ -190,7 +190,7 @@ Separating view component and web component wrapper
 
 Form views
 ----------
-- Should only send up changed values
+- Should only send up changed values - but see later
 - Don't need to know contained elements - just accept events
 - Store updated values from event
 
@@ -208,12 +208,13 @@ View app, navigation, routing
 - View app displays routing items in a menu and when clicked, adds history item with path
 - When location changed, finds component with longest path and displays its component, passing in rest of path
 - Could have favourites widget added if want to
-- Idea of self-routing comnponents - each component in a container handles a route segment, gets rest of path and decides how to use it
+- Idea of self-routing components - each component in a container handles a route segment, gets rest of path and decides how to use it
 - Could have override routes if necessary
 - Should view state be part of main redux state? Prob better if components self-contained - devolve control to appropriate level
 - Routing should *not* destroy a component when move away
 - Important to be able to move to a different part of app, change something, go back and see effect
 - Tab control not suitable as have levels of navigation
+- All react routers seem to destroy current dom when moving to another page
 
 List-entity view
 ----------------
@@ -249,6 +250,22 @@ Report view
 - So report view has to call method on app direct when form submitted, and use return value to update its output object
 - This also fits better with other UI models, such as getting parameters and then moving to view
 
+Defining report views
+---------------------
+- Data layer - define computations and data items
+- Data layer metadata - define type and meaning of data items
+- May have full entity available in some cases
+- Or full entity extended with extra computations
+- View layer - define with minimal stuff
+- Views are just functions
+- View functions can be composed and can have high or low levels of abstraction
+- Can have options with defaults so basic usage very easy but have flexibility
+- Can they be simpler than React/JSX code?
+- Are we talking about functions that create HTML, or functions that create (React) components that create HTML
+- Use metadata from data source
+- Need to specify only what would say in a conversation about the view
+- See example at end
+
 List editing view
 -----------------
 - Show existing elements
@@ -261,6 +278,27 @@ List editing view
 - Each change creates a new immutable list
 - Change goes via onChange to form above
 
+Links in views
+--------------
+- Need easy way to specify link to an entity in a view
+- Posting is interesting: 
+  -  in Transaction want to link to Account and show account descriptor
+  -  in Account want to link to Transaction and show its descriptor
+  - SO need to have different view for the list item in each containing entity
+
+Updating app data from views
+----------------------------
+- Could send back just the form changes
+- Ok for single level, but difficult if have structured data in the entity - eg account address, transaction postings
+- May edit at multiple levels, each needs to pass its bit back up
+- So prob best to pass a new immutable object back to app for update
+- Best if app only stores changes, for both space and reducing conflicts
+- SO stored replay action will be different to action from view
+- Can this be done automatically to avoid dual coding for each action?
+- Also need to rearrange the flow so app creates a serializable update for each action applied to it - as well as a new version of itself
+- Poss: update still returns a new version of immutable app state, but new version has $latestUpdate in it
+
+
 Validation and errors
 ---------------------
 - Need to send errors to page and show them
@@ -269,7 +307,31 @@ Validation and errors
 - Consider what happens if entities become invalid due to conflicting updates
 - Poss: clone entity and display all the updated calculated values and the errors from it, then send updates when ready
 - App can also clone entity and apply updates to check, but throw exception with errors if found
-- API calls to app would send back errors from excp 
+- API calls to app would send back errors from excp
+- Validation rules built into class metadata
+- May require injecting the app - but prob need to inject for many normal business functions anyway
+- View holds copy of entity with changes, so validation errors can be seen straight away
+- Probably throw excp at app update if not valid
+
+Super-views
+-----------
+- Parameterizable containers, right up to whole app view level
+- Tools rather than frameworks
+- Relies on views being composable - plugging views into others
+
+Automatic views and metadata
+----------------------------
+- Entity has associated metadata
+- Defines characteristics of each property
+- Views can use to generate standard layout
+- Metadata can have standard proeprty sets eg allUpdatable, defaultViewProperties
+- Property lists could have sublists to indicate a horizontal layout
+- Merge in override metadata by path
+- Override layout with specific view at any point in tree
+- For dispatching commands, a universal save action would be good
+- Need to generate form items for all data types and complex types
+- Need a reference to entity type with picker
+- BUT there will be times when it is easier to let data drive the view, and times when easier to specify the view - need both
 
 Update granularity
 ------------------
@@ -307,3 +369,23 @@ UI ideas
 - Scrolling list plus selected one pattern
 - Search fixed at top of list
 - Shift-click to open multiple tabs on view side
+
+
+Examples
+========
+
+Trial balance view - minimal specification
+------------------
+
+Trial balance data has:
+- accounts: a list of accounts in correct order
+- totals: debit and credit totals
+
+`
+function trialBalanceView() {
+    return [
+        table("accounts", ["code", "name", "debitBalance", "creditBalance"]),
+        table("totals", [EMPTY, EMPTY, "debit", "credit"])
+    ]
+}
+`

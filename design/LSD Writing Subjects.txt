@@ -14,6 +14,8 @@ LSD Writing Subjects
 - Data flow wiring - with send().to() - nice and self-contained
 - Design and implementation of S3 distributed store - 2 parts
 - Tutorial on creating Accounts spike - no frameworks
+- Running tests with mocha, babel, flow
+- JS test in browser
 
 Points
 ------
